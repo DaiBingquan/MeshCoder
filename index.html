@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="MeshLLM: LLM-Powered Structured Mesh Code Generation from Point Clouds - A novel approach for generating 3D mesh structures using large language models.">
+  <meta name="keywords" content="MeshLLM, Mesh Generation, Point Clouds, LLM, Structured Mesh Code">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MeshLLM: LLM-Powered Structured Mesh Code Generation from Point Clouds</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="icon" href="assets/imgs/pjlab.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+
+<style>
+  /* 多彩彩虹渐变效果 */
+  .grad2 {
+    background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
+    background-size: 400% 400%;
+    animation: gradientShift 4s ease infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* 导航栏样式 */
+  .navbar {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+  }
+
+  .navbar-brand .navbar-item {
+    transition: transform 0.3s ease;
+  }
+
+  .navbar-brand .navbar-item:hover {
+    transform: scale(1.05);
+    background-color: transparent;
+  }
+
+  .navbar-brand .navbar-item img {
+    max-height: 40px;
+  }
+
+
+</style>
+
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand" style="width: 100%; justify-content: center;">
+    <a class="navbar-item" href="https://www.shlab.org.cn/" target="_blank">
+      <img src="assets/imgs/pjlab.png" alt="Shanghai AI Lab" style="height: 40px;">
+    </a>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title-name"><span class="grad2">MeshLLM</span></h1>
+          <h1 class="title is-1 publication-title">LLM-Powered Structured Mesh Code Generation from Point Clouds</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="">Bingquan&nbsp;Dai</a><sup>1,2*</sup>,</span>
+            <span class="author-block">
+              <a href="https://github.com/CreativeLuo">Li&nbsp;Ray&nbsp;Luo</a><sup>2*</sup>,</span>
+            <span class="author-block">
+              <a href="https://openreview.net/profile?id=%7EQihong_Tang1">Qihong&nbsp;Tang</a><sup>1,3</sup>,</span>
+            <span class="author-block">
+              <a href="https://roywangj.github.io/">Jie&nbsp;Wang</a><sup>1,4</sup>,</span>
+            <span class="author-block">
+              <a href="">Xinyu&nbsp;Lian</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://hoytxu.me">Hao&nbsp;Xu</a><sup>1,5</sup>,</span>
+            </br>
+            <span class="author-block">
+              <a href="https://minghanqin.github.io/">Minghan&nbsp;Qin</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://sheldontsui.github.io/">Xudong&nbsp;Xu</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://daibo.info/">Bo&nbsp;Dai</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.sigs.tsinghua.edu.cn/whq_en/main.htm">Haoqian&nbsp;Wang</a><sup>2†</sup>,</span>
+            <span class="author-block">
+              <a href="https://zhaoyanglyu.github.io/">Zhaoyang&nbsp;Lyu</a><sup>1†</sup>,</span>
+            <span class="author-block">
+              <a href="https://oceanpang.github.io/">Jiangmiao&nbsp;Pang</a><sup>1</sup></span>
+          </div>
+          </br>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Shanghai AI Lab&nbsp;&nbsp;&nbsp;</span>
+            <span class="author-block"><sup>2</sup>Tsinghua University&nbsp;&nbsp;&nbsp;</span>
+            <span class="author-block"><sup>3</sup>Harbin Institute of Technology&nbsp;&nbsp;&nbsp;</span>
+            </br>
+            <span class="author-block"><sup>4</sup>Beijing Institute of Technology&nbsp;&nbsp;&nbsp;</span>
+            <span class="author-block"><sup>5</sup>HKUST(GZ)&nbsp;&nbsp;&nbsp;</span>
+          </div>
+          
+          <p style="text-align:center"><sup>*</sup>Equal contribution &nbsp;&nbsp; <sup>†</sup>Corresponding author</p>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Code Animation Section -->
+<section class="section" style="background: #ffffff; padding: 3rem 0;">
+  <div class="container is-max-desktop">
+    <!-- First Row: Two GIFs -->
+    <div class="columns is-vcentered is-variable is-6 mb-4">
+      <!-- Left GIF -->
+      <div class="column is-6 has-text-centered">
+        <img src="assets/gifs/pc_gif/toilet_spinning_pointcloud.gif" 
+             alt="Point Cloud" 
+             style="max-width: 80%; border-radius: 8px;">
+        <p style="margin-top: 1rem; font-weight: bold; color: #666;">Point Cloud Input</p>
+      </div>
+      
+      <!-- Right GIF -->
+      <div class="column is-6 has-text-centered">
+        <img src="assets/gifs/mesh_gif/toilet_spinning.gif" 
+             alt="Run in Blender to generate mesh" 
+             style="max-width: 80%; border-radius: 8px;">
+        <p style="margin-top: 1rem; font-weight: bold; color: #666;">Generated Mesh</p>
+      </div>
+    </div>
+    
+    <!-- Second Row: Arrows -->
+    <div class="columns is-vcentered is-variable is-6 mb-4">
+      <!-- Left Arrow (Down) -->
+      <div class="column is-6 has-text-centered">
+        <div style="font-size: 2rem; color: #569cd6;">↓</div>
+      </div>
+      
+      <!-- Right Arrow (Up) -->
+      <div class="column is-6 has-text-centered">
+        <div style="font-size: 2rem; color: #569cd6;">↑</div>
+      </div>
+    </div>
+    
+    <!-- Third Row: Code Display -->
+    <div class="columns is-centered">
+      <div class="column is-12">
+        <div style="border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #ddd;">
+          <iframe src="code.html" 
+                  style="width: 100%; height: 500px; border: none; background: #ffffff; display: block; margin: 0; padding: 0;" 
+                  frameborder="0" scrolling="auto">
+          </iframe>
+        </div>
+        <p style="margin-top: 1rem; font-weight: bold; color: #666; text-align: center;">Generated Code</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="index.html" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="index.html" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="index.html" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="index.html" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="index.html" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="index.html" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="index.html" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="index.html" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Reconstructing 3D objects into editable programs is pivotal for applications like reverse engineering and shape editing.
+            However, existing methods often rely on limited domain-specific languages (DSLs) and small-scale datasets, restricting their ability to model complex geometries and structures.
+          </p>
+          <p>
+            To address these challenges, we introduce <strong>MeshLLM</strong>, a novel framework that reconstructs complex 3D objects from point clouds into editable Blender Python scripts.
+            We develop a comprehensive set of expressive Blender Python APIs capable of synthesizing intricate geometries.
+            Leveraging these APIs, we construct a large-scale paired object-code dataset, where the code for each object is decomposed into distinct semantic parts.
+          </p>
+          <p>
+            Subsequently, we train a multimodal large language model (LLM) that translates 3D point clouds into executable Blender Python scripts.
+            Our approach not only achieves superior performance in shape-to-code reconstruction tasks but also facilitates intuitive geometric and topological editing through convenient code modifications.
+            Furthermore, our code-based representation enhances the reasoning capabilities of LLMs in 3D shape understanding tasks.
+            Together, these contributions establish <strong>MeshLLM</strong> as a powerful and flexible solution for programmatic 3D shape reconstruction and understanding.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      <!-- Visual Effects. -->
+      <!-- <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Visual Effects</h2>
+          <p>
+            Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+            would be impossible without nerfies since it would require going through a wall.
+          </p>
+          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/dollyzoom-stacked.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div> -->
+      <!--/ Visual Effects. -->
+
+      <!-- Matting. -->
+      <!-- <div class="column">
+        <h2 class="title is-3">Matting</h2>
+        <div class="columns is-centered">
+          <div class="column content">
+            <p>
+              As a byproduct of our method, we can also solve the matting problem by ignoring
+              samples that fall outside of a bounding box during rendering.
+            </p>
+            <video id="matting-video" controls playsinline height="100%">
+              <source src="static/videos/matting.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+
+        </div>
+      </div>
+    </div> -->
+    <!--/ Matting. -->
+
+    <!-- Animation. -->
+    <!-- <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Animation</h2>
+
+        <!-- Interpolating. -->
+        <!-- <h3 class="title is-4">Interpolating states</h3>
+        <div class="content has-text-justified">
+          <p>
+            We can also animate the scene by interpolating the deformation latent codes of two input
+            frames. Use the slider here to linearly interpolate between the left frame and the right
+            frame.
+          </p>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-3 has-text-centered">
+            <img src="static/images/interpolate_start.jpg"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <p>Start Frame</p>
+          </div>
+          <div class="column interpolation-video-column">
+            <div id="interpolation-image-wrapper">
+              Loading...
+            </div>
+            <input class="slider is-fullwidth is-large is-info"
+                   id="interpolation-slider"
+                   step="1" min="0" max="100" value="0" type="range">
+          </div>
+          <div class="column is-3 has-text-centered">
+            <img src="static/images/interpolate_end.jpg"
+                 class="interpolation-image"
+                 alt="Interpolation end reference image."/>
+            <p class="is-bold">End Frame</p>
+          </div>
+        </div>
+        <br/> -->
+        <!--/ Interpolating. -->
+
+        <!-- Re-rendering. -->
+        <!-- <h3 class="title is-4">Re-rendering the input video</h3>
+        <div class="content has-text-justified">
+          <p>
+            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
+            viewpoint such as a stabilized camera by playing back the training deformations.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <video id="replay-video"
+                 controls
+                 muted
+                 preload
+                 playsinline
+                 width="75%">
+            <source src="static/videos/replay.mp4"
+                    type="video/mp4">
+          </video>
+        </div> -->
+        <!--/ Re-rendering. -->
+
+      </div>
+    </div>
+    <!--/ Animation. -->
+
+
+    <!-- Concurrent Work. -->
+    <!-- <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Links</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            There's a lot of excellent work that was introduced around the same time as ours.
+          </p>
+          <p>
+            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
+          </p>
+          <p>
+            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+            both use deformation fields to model non-rigid scenes.
+          </p>
+          <p>
+            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
+          </p>
+          <p>
+            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+          </p>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Concurrent Work. -->
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{meshllm,
+  author    = {Bingquan Dai and Li Ray Luo and Qihong Tang and Jie Wang and Xinyu Lian and Hao Xu
+               and Minghan Qin and Xudong Xu and Bo Dai and Haoqian Wang and Zhaoyang Lyu and Jiangmiao Pang},
+  title     = {MeshLLM: LLM-based Mesh Code Generation},
+  journal   = {NeurIPS},
+  year      = {2025},
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website uses the <a href="https://nerfies.github.io/">Nerfies template</a>.
+          </p>
+          <p>
+            The visual designs are inspired from the <a href="https://research.nvidia.com/labs/toronto-ai/LLaMA-Mesh/">LLaMA-Mesh</a> and <a href="https://hkdsc.github.io/project/copart/">CoPart</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>

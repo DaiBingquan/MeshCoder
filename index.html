@@ -39,6 +39,17 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/latex.min.js"></script>
+  <script>
+    hljs.registerLanguage('bibtex', hljs.getLanguage('latex'));
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('pre code').forEach((el) => {
+        hljs.highlightElement(el);
+      });
+    });
+  </script>
 
 <style>
   /* 多彩彩虹渐变效果 */
@@ -207,17 +218,19 @@
     <div class="columns is-vcentered is-variable is-6 mb-4">
       <!-- Left GIF -->
       <div class="column is-6 has-text-centered">
-        <img src="assets/gifs/pc_gif/toilet_spinning_pointcloud.gif" 
+        <img src="assets/gifs/pc_gif/sofa_spinning_pointcloud.gif" 
              alt="Point Cloud" 
              style="max-width: 80%; border-radius: 8px;">
         <p style="margin-top: 1rem; font-weight: bold; color: #666;">Point Cloud Input</p>
       </div>
       
-      <!-- Right GIF -->
+      <!-- Right Video -->
       <div class="column is-6 has-text-centered">
-        <img src="assets/gifs/mesh_gif/toilet_spinning.gif" 
-             alt="Run in Blender to generate mesh" 
-             style="max-width: 80%; border-radius: 8px;">
+        <video src="assets/videos/parts.mp4" 
+               style="max-width: 80%; border-radius: 8px;" 
+               controls autoplay loop muted playsinline>
+          您的浏览器不支持 video 标签。
+        </video>
         <p style="margin-top: 1rem; font-weight: bold; color: #666;">Generated Mesh</p>
       </div>
     </div>
@@ -491,13 +504,24 @@
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
-    <pre><code>@article{meshllm,
-  author    = {Bingquan Dai and Li Ray Luo and Qihong Tang and Jie Wang and Xinyu Lian and Hao Xu
-               and Minghan Qin and Xudong Xu and Bo Dai and Haoqian Wang and Zhaoyang Lyu and Jiangmiao Pang},
+    <pre><code class="language-bibtex">@article{meshllm,
+  author    = {Bingquan Dai
+               and Li Ray Luo
+               and Qihong Tang
+               and Jie Wang
+               and Xinyu Lian
+               and Hao Xu
+               and Minghan Qin
+               and Xudong Xu
+               and Bo Dai
+               and Haoqian Wang
+               and Zhaoyang Lyu
+               and Jiangmiao Pang},
   title     = {MeshLLM: LLM-based Mesh Code Generation},
   journal   = {NeurIPS},
   year      = {2025},
-}</code></pre>
+}
+</code></pre>
   </div>
 </section>
 

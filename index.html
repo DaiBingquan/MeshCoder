@@ -220,14 +220,14 @@
       <div class="column is-6 has-text-centered">
         <img src="assets/gifs/pc_gif/sofa_spinning_pointcloud.gif" 
              alt="Point Cloud" 
-             style="max-width: 80%; border-radius: 8px;">
+             style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;">
         <p style="margin-top: 1rem; font-weight: bold; color: #666;">Point Cloud Input</p>
       </div>
       
       <!-- Right Video -->
       <div class="column is-6 has-text-centered">
         <video src="assets/videos/parts.mp4" 
-               style="max-width: 80%; border-radius: 8px;" 
+               style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;" 
                controls autoplay loop muted playsinline>
           您的浏览器不支持 video 标签。
         </video>
@@ -328,6 +328,9 @@
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
+        <div style="width:100%; display:flex; justify-content:center; margin-bottom:2rem;">
+  <img src="assets/imgs/pipeline.jpg" alt="Pipeline" style="width:100%; max-width:1200px; height:auto; border-radius:8px; border:1px solid #ddd;" />
+</div>
         <div class="content has-text-justified">
           <p>
             Reconstructing 3D objects into editable programs is pivotal for applications like reverse engineering and shape editing.
@@ -505,18 +508,7 @@
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
     <pre><code class="language-bibtex">@article{meshllm,
-  author    = {Bingquan Dai
-               and Li Ray Luo
-               and Qihong Tang
-               and Jie Wang
-               and Xinyu Lian
-               and Hao Xu
-               and Minghan Qin
-               and Xudong Xu
-               and Bo Dai
-               and Haoqian Wang
-               and Zhaoyang Lyu
-               and Jiangmiao Pang},
+  author    = {Bingquan Dai and Li Ray Luo and Qihong Tang and Jie Wang and Xinyu Lian and Hao Xu and Minghan Qin and Xudong Xu and Bo Dai and Haoqian Wang and Zhaoyang Lyu and Jiangmiao Pang},
   title     = {MeshLLM: LLM-based Mesh Code Generation},
   journal   = {NeurIPS},
   year      = {2025},

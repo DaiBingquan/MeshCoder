@@ -26,8 +26,6 @@
         rel="stylesheet">
 
   <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
@@ -36,8 +34,6 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script src="static/js/bulma-carousel.min.js"></script>
-  <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
@@ -214,19 +210,21 @@
 <!-- Code Animation Section -->
 <section class="section" style="background: #ffffff; padding: 3rem 0;">
   <div class="container is-max-desktop">
-    <!-- First Row: Two GIFs -->
+    <!-- First Row: Two Videos -->
     <div class="columns is-vcentered is-variable is-6 mb-4">
-      <!-- Left GIF -->
+      <!-- Left Video -->
       <div class="column is-6 has-text-centered">
-        <img src="assets/gifs/pc_gif/sofa_spinning_pointcloud.gif" 
-             alt="Point Cloud" 
-             style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;">
+        <video src="assets/videos/sofa_pointcloud.mp4"
+               style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;"
+               controls autoplay loop muted playsinline>
+          您的浏览器不支持 video 标签。
+        </video>
         <p style="margin-top: 1rem; font-weight: bold; color: #666;">Point Cloud Input</p>
       </div>
       
       <!-- Right Video -->
       <div class="column is-6 has-text-centered">
-        <video src="assets/videos/parts.mp4" 
+        <video src="assets/videos/sofa_mesh.mp4" 
                style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;" 
                controls autoplay loop muted playsinline>
           您的浏览器不支持 video 标签。

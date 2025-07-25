@@ -155,3 +155,49 @@ body {
 #interpolation-image-wrapper img {
   border-radius: 5px;
 }
+
+/* ===== 主页特定样式 ===== */
+
+/* 多彩彩虹渐变效果 */
+.grad2 {
+  background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
+  background-size: 400% 400%;
+  animation: gradientShift 4s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 导航栏样式 */
+.navbar {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+}
+
+.navbar-brand .navbar-item {
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand .navbar-item:hover {
+  transform: scale(1.05);
+  background-color: transparent;
+}
+
+.navbar-brand .navbar-item img {
+  max-height: 40px;
+}
+
+/* 导航栏居中样式 */
+.navbar-brand-centered {
+  width: 100%;
+  justify-content: center;
+}

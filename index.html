@@ -9,8 +9,8 @@
   <title>MeshLLM: LLM-Powered Structured Mesh Code Generation from Point Clouds</title>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=<your-ga-id>"></script> -->
+  <!-- <script>
     window.dataLayer = window.dataLayer || [];
 
     function gtag() {
@@ -19,8 +19,8 @@
 
     gtag('js', new Date());
 
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
+    gtag('config', '<your-ga-id>');
+  </script> -->
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
         rel="stylesheet">
@@ -32,7 +32,6 @@
   <link rel="stylesheet" href="static/css/index.css">
   <link rel="icon" href="assets/imgs/pjlab.png">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
   <script src="static/js/index.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
@@ -47,53 +46,13 @@
     });
   </script>
 
-<style>
-  /* 多彩彩虹渐变效果 */
-  .grad2 {
-    background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
-    background-size: 400% 400%;
-    animation: gradientShift 4s ease infinite;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-  }
 
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  /* 导航栏样式 */
-  .navbar {
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 0;
-  }
-
-  .navbar-brand .navbar-item {
-    transition: transform 0.3s ease;
-  }
-
-  .navbar-brand .navbar-item:hover {
-    transform: scale(1.05);
-    background-color: transparent;
-  }
-
-  .navbar-brand .navbar-item img {
-    max-height: 40px;
-  }
-
-
-</style>
 
 </head>
 <body>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand" style="width: 100%; justify-content: center;">
+  <div class="navbar-brand navbar-brand-centered">
     <a class="navbar-item" href="https://www.shlab.org.cn/" target="_blank">
       <img src="assets/imgs/pjlab.png" alt="Shanghai AI Lab" style="height: 40px;">
     </a>

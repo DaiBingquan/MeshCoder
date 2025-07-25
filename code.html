@@ -8,15 +8,16 @@
 </head>
 <body>
     <div class="container">
+        <button class="wrap-toggle-btn" id="wrapToggleBtn" title="Toggle code wrapping">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M3 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M3 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M15 12L18 15L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
         <div class="code-display" id="codeDisplay">
-            <button class="wrap-toggle-btn" id="wrapToggleBtn" title="切换代码换行">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M3 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M3 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M15 12L18 15L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
+            <!-- All code content rendered here -->
         </div>
     </div>
 

@@ -1,4 +1,4 @@
-/* 代码动画页面样式 */
+/* Code animation page styles */
 * {
     margin: 0;
     padding: 0;
@@ -11,9 +11,11 @@ body {
     font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
     font-size: 14px;
     line-height: 1.6;
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: auto;
     margin: 0;
     padding: 0;
+    position: relative;
 }
 
 .container {
@@ -21,8 +23,10 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
+/* Allow content to expand naturally */
 .code-display {
     background: #ffffff;
     padding: 15px;
@@ -33,16 +37,15 @@ body {
     position: relative;
     font-size: 12px;
     line-height: 1.4;
-    width: 100%;
     min-width: max-content;
     box-sizing: border-box;
     scrollbar-width: auto;
     scrollbar-color: #999 #ffffff;
 }
 
-/* 换行控制按钮 */
+/* Wrap toggle button - positioned relative to viewport */
 .wrap-toggle-btn {
-    position: absolute;
+    position: fixed;
     top: 10px;
     right: 10px;
     width: 32px;
@@ -56,8 +59,9 @@ body {
     justify-content: center;
     color: #666;
     transition: all 0.2s ease;
-    z-index: 100;
-    opacity: 0.8;
+    z-index: 1000;
+    opacity: 0.9;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .wrap-toggle-btn:hover {
@@ -65,13 +69,14 @@ body {
     border-color: #999;
     opacity: 1;
     transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .wrap-toggle-btn:active {
     transform: scale(0.95);
 }
 
-/* 换行模式样式 */
+/* Text wrapping mode styles */
 .code-display.wrap-mode {
     white-space: pre-wrap;
     word-break: break-all;
@@ -79,12 +84,12 @@ body {
     overflow-x: hidden;
 }
 
-/* 换行模式下隐藏行号 */
+/* Hide line numbers in wrap mode */
 .code-display.wrap-mode .code-line-number {
     display: none;
 }
 
-/* 换行模式下调整按钮图标 */
+/* Adjust button icon in wrap mode */
 .wrap-toggle-btn.active {
     background: #569cd6;
     color: white;
@@ -98,7 +103,7 @@ body {
     min-width: max-content;
 }
 
-/* 换行模式下的代码行样式 */
+/* Code line styles in wrap mode */
 .code-display.wrap-mode .code-line {
     white-space: pre-wrap;
     min-width: auto;
@@ -136,7 +141,7 @@ body {
     white-space: pre;
 }
 
-/* 换行模式下的单词样式 */
+/* Word styles in wrap mode */
 .code-display.wrap-mode .code-word {
     white-space: pre-wrap;
 }
@@ -187,7 +192,7 @@ body {
     animation-delay: 0.5s;
 }
 
-/* 自定义滚动条样式 - 增强可见性 */
+/* Custom scrollbar styles - enhanced visibility */
 .code-display::-webkit-scrollbar {
     width: 12px;
     height: 12px;
@@ -213,7 +218,7 @@ body {
     background: #ffffff;
 }
 
-/* 确保横向滚动时内容不被截断 */
+/* Ensure content is not truncated during horizontal scrolling */
 .code-display * {
     box-sizing: border-box;
 } 

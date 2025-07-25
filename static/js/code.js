@@ -1,6 +1,6 @@
 /**
- * MeshLLM 代码动画器
- * 实现打字机效果的代码动画展示
+ * MeshLLM Code Animator
+ * Implements typewriter effect for code animation display
  */
 class CodeAnimator {
     constructor() {
@@ -64,16 +64,42 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
         this.words = [];
         this.currentWordIndex = 0;
         this.isPlaying = false;
-        this.animationSpeed = 60; // 动画速度设置：数值越小越快，单位毫秒
-        this.lastLineNumber = 0; // 跟踪上一个行号
+        this.animationSpeed = 10; // Animation speed setting: lower value means faster, in milliseconds
+        this.lastLineNumber = 0; // Track the last line number
         this.codeDisplay = document.getElementById('codeDisplay');
+        this.isWrapMode = false; // Text wrapping mode status
+        this.wrapToggleBtn = null; // Reference to wrap toggle button
         
         this.init();
     }
 
     init() {
         this.parseCode();
-        setTimeout(() => this.start(), 1000); // 自动开始
+        this.initWrapToggle(); // Initialize wrap toggle button
+        setTimeout(() => this.start(), 1000); // Auto start
+    }
+
+    initWrapToggle() {
+        this.wrapToggleBtn = document.getElementById('wrapToggleBtn');
+        if (this.wrapToggleBtn) {
+            this.wrapToggleBtn.addEventListener('click', () => {
+                this.toggleWrapMode();
+            });
+        }
+    }
+
+    toggleWrapMode() {
+        this.isWrapMode = !this.isWrapMode;
+        
+        if (this.isWrapMode) {
+            this.codeDisplay.classList.add('wrap-mode');
+            this.wrapToggleBtn.classList.add('active');
+            this.wrapToggleBtn.title = 'Disable code wrapping';
+        } else {
+            this.codeDisplay.classList.remove('wrap-mode');
+            this.wrapToggleBtn.classList.remove('active');
+            this.wrapToggleBtn.title = 'Toggle code wrapping';
+        }
     }
 
     parseCode() {
@@ -88,20 +114,21 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
                     content: '' 
                 });
             } else {
-                // 统一的分词处理，保持代码的原始结构
+                // Unified word processing to maintain original code structure
                 const tokens = line.split(/(\s+|[()[\]{},.:'"\-=])/);
-                let isFirstToken = true;
+                let isFirstMeaningfulToken = true;
                 
                 tokens.forEach((token) => {
                     if (token.length > 0) {
+                        const isMeaningfulToken = token.trim().length > 0;
                         this.words.push({
                             type: 'word',
                             content: token,
                             lineNumber: lineIndex + 1,
-                            isFirstInLine: isFirstToken && token.trim().length > 0
+                            isFirstInLine: isFirstMeaningfulToken && isMeaningfulToken
                         });
-                        if (token.trim().length > 0) {
-                            isFirstToken = false;
+                        if (isMeaningfulToken) {
+                            isFirstMeaningfulToken = false;
                         }
                     }
                 });
@@ -140,9 +167,9 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
         const span = document.createElement('span');
         span.className = 'code-word';
         
-        // 添加行号（只在行首）
-        if (wordData.isFirstInLine) {
-            // 如果是新行号且不是第一行，先换行
+        // Add line number (only at the beginning of line and not in wrap mode)
+        if (wordData.isFirstInLine && !this.isWrapMode) {
+            // If it's a new line number and not the first line, add newline first
             if (wordData.lineNumber > this.lastLineNumber && this.lastLineNumber > 0) {
                 this.addNewLine();
             }
@@ -152,21 +179,27 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
             lineNumber.textContent = wordData.lineNumber.toString().padStart(2);
             span.appendChild(lineNumber);
             
-            // 更新最后一个行号
+            // Update the last line number
+            this.lastLineNumber = wordData.lineNumber;
+        } else if (wordData.isFirstInLine && this.isWrapMode) {
+            // In wrap mode, don't show line numbers at line start, but still need newline
+            if (wordData.lineNumber > this.lastLineNumber && this.lastLineNumber > 0) {
+                this.addNewLine();
+            }
             this.lastLineNumber = wordData.lineNumber;
         }
         
-        // 添加单词内容
+        // Add word content
         const wordElement = document.createElement('span');
         wordElement.textContent = wordData.content;
         
-        // 应用语法高亮
+        // Apply syntax highlighting
         this.applySyntaxHighlighting(wordElement, wordData.content);
         
         span.appendChild(wordElement);
         this.codeDisplay.appendChild(span);
         
-        // 更新光标
+        // Update cursor
         this.removeCursor();
         this.addCursor();
     }
@@ -179,10 +212,10 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
     applySyntaxHighlighting(element, content) {
         const trimmedContent = content.trim();
         
-        // Python 关键字
+        // Python keywords
         const keywords = ['import', 'from', 'def', 'class', 'if', 'else', 'elif', 'for', 'while', 'try', 'except', 'return', 'yield', 'pass', 'break', 'continue', 'and', 'or', 'not', 'in', 'is', 'with', 'as', 'lambda'];
         
-        // MeshLLM 特定函数
+        // MeshLLM specific functions
         const meshFunctions = ['create_circle', 'create_curve', 'create_quad', 'bridge_edge_loops', 'bevel', 'create_primitive', 'delete_all'];
         
         if (keywords.includes(trimmedContent)) {
@@ -223,7 +256,7 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
     }
 }
 
-// 页面加载完成后初始化
+// Initialize after page loads
 document.addEventListener('DOMContentLoaded', function() {
     new CodeAnimator();
 });

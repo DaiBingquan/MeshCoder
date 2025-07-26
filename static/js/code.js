@@ -64,11 +64,17 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
         this.words = [];
         this.currentWordIndex = 0;
         this.isPlaying = false;
-        this.animationSpeed = 10; // Animation speed setting: lower value means faster, in milliseconds
+        this.animationSpeed = 60; // Animation speed setting: lower value means faster, in milliseconds
+        this.batchSize = 4; // Number of words to render per frame
         this.lastLineNumber = 0; // Track the last line number
         this.codeDisplay = document.getElementById('codeDisplay');
         this.isWrapMode = false; // Text wrapping mode status
         this.wrapToggleBtn = null; // Reference to wrap toggle button
+        this.fullscreenModal = document.getElementById('fullscreenModal');
+        this.fullscreenCodeDisplay = document.getElementById('fullscreenCodeDisplay');
+        this.closeModalBtn = document.getElementById('closeModalBtn');
+        this.fullscreenToggleBtn = null;
+        this.isFullscreen = false;
         
         this.init();
     }
@@ -76,7 +82,10 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
     init() {
         this.parseCode();
         this.initWrapToggle(); // Initialize wrap toggle button
-        setTimeout(() => this.start(), 1000); // Auto start
+        this.initFullscreenToggle(); // Initialize fullscreen toggle button
+        this.initCloseModalBtn(); // Initialize close modal button
+        this.initEscKeyHandler(); // Initialize ESC key handler
+        requestAnimationFrame(() => this.start()); // Auto start with requestAnimationFrame
     }
 
     initWrapToggle() {
@@ -86,6 +95,31 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
                 this.toggleWrapMode();
             });
         }
+    }
+
+    initFullscreenToggle() {
+        this.fullscreenToggleBtn = document.getElementById('fullscreenToggleBtn');
+        if (this.fullscreenToggleBtn) {
+            this.fullscreenToggleBtn.addEventListener('click', () => {
+                this.toggleFullscreen();
+            });
+        }
+    }
+
+    initCloseModalBtn() {
+        if (this.closeModalBtn) {
+            this.closeModalBtn.addEventListener('click', () => {
+                this.closeFullscreen();
+            });
+        }
+    }
+
+    initEscKeyHandler() {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isFullscreen) {
+                this.closeFullscreen();
+            }
+        });
     }
 
     toggleWrapMode() {
@@ -100,6 +134,63 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
             this.wrapToggleBtn.classList.remove('active');
             this.wrapToggleBtn.title = 'Toggle code wrapping';
         }
+    }
+
+    toggleFullscreen() {
+        if (!this.isFullscreen) {
+            // Render complete code instantly in fullscreen
+            const fullscreenContent = this.renderCompleteCode();
+            this.fullscreenCodeDisplay.innerHTML = fullscreenContent;
+            this.fullscreenModal.classList.add('active');
+            this.isFullscreen = true;
+            document.body.style.overflow = 'hidden';
+            this.fullscreenToggleBtn.classList.add('active');
+        } else {
+            this.closeFullscreen();
+        }
+    }
+
+    closeFullscreen() {
+        this.fullscreenModal.classList.remove('active');
+        this.isFullscreen = false;
+        document.body.style.overflow = '';
+        this.fullscreenToggleBtn.classList.remove('active');
+    }
+
+    renderCompleteCode() {
+        const container = document.createElement('div');
+        let currentLineNumber = 1;
+        
+        this.words.forEach((word, index) => {
+            if (word.type === 'newline') {
+                container.appendChild(document.createElement('br'));
+            } else {
+                if (word.isFirstInLine) {
+                    if (currentLineNumber > 1) {
+                        container.appendChild(document.createElement('br'));
+                    }
+                    const lineNumber = document.createElement('span');
+                    lineNumber.className = 'code-line-number';
+                    lineNumber.textContent = currentLineNumber.toString().padStart(2);
+                    container.appendChild(lineNumber);
+                    currentLineNumber++;
+                }
+                
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'code-word';
+                wordSpan.style.opacity = '1'; // Make sure word is visible immediately
+                wordSpan.style.animation = 'none'; // Disable animation
+                
+                const wordElement = document.createElement('span');
+                wordElement.textContent = word.content;
+                this.applySyntaxHighlighting(wordElement, word.content);
+                
+                wordSpan.appendChild(wordElement);
+                container.appendChild(wordSpan);
+            }
+        });
+        
+        return container.innerHTML;
     }
 
     parseCode() {
@@ -149,29 +240,37 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
             return;
         }
 
+        // Process multiple words per frame for smoother animation
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < this.batchSize && this.currentWordIndex < this.words.length; i++) {
         const currentWord = this.words[this.currentWordIndex];
         
         if (currentWord.type === 'newline') {
-            this.addNewLine();
+                fragment.appendChild(document.createElement('br'));
         } else {
-            this.addWord(currentWord);
+                const wordSpan = this.createWordElement(currentWord);
+                fragment.appendChild(wordSpan);
         }
 
         this.currentWordIndex++;
+        }
+
+        this.codeDisplay.appendChild(fragment);
         this.scrollToBottom();
         
-        setTimeout(() => this.animate(), this.animationSpeed);
+        // Use requestAnimationFrame for smoother animation
+        if (this.currentWordIndex < this.words.length) {
+            requestAnimationFrame(() => setTimeout(() => this.animate(), this.animationSpeed));
+        }
     }
 
-    addWord(wordData) {
+    createWordElement(wordData) {
         const span = document.createElement('span');
         span.className = 'code-word';
         
-        // Add line number (only at the beginning of line and not in wrap mode)
         if (wordData.isFirstInLine && !this.isWrapMode) {
-            // If it's a new line number and not the first line, add newline first
             if (wordData.lineNumber > this.lastLineNumber && this.lastLineNumber > 0) {
-                this.addNewLine();
+                span.insertBefore(document.createElement('br'), span.firstChild);
             }
             
             const lineNumber = document.createElement('span');
@@ -179,34 +278,20 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
             lineNumber.textContent = wordData.lineNumber.toString().padStart(2);
             span.appendChild(lineNumber);
             
-            // Update the last line number
             this.lastLineNumber = wordData.lineNumber;
         } else if (wordData.isFirstInLine && this.isWrapMode) {
-            // In wrap mode, don't show line numbers at line start, but still need newline
             if (wordData.lineNumber > this.lastLineNumber && this.lastLineNumber > 0) {
-                this.addNewLine();
+                span.insertBefore(document.createElement('br'), span.firstChild);
             }
             this.lastLineNumber = wordData.lineNumber;
         }
         
-        // Add word content
         const wordElement = document.createElement('span');
         wordElement.textContent = wordData.content;
-        
-        // Apply syntax highlighting
         this.applySyntaxHighlighting(wordElement, wordData.content);
-        
         span.appendChild(wordElement);
-        this.codeDisplay.appendChild(span);
         
-        // Update cursor
-        this.removeCursor();
-        this.addCursor();
-    }
-
-    addNewLine() {
-        const br = document.createElement('br');
-        this.codeDisplay.appendChild(br);
+        return span;
     }
 
     applySyntaxHighlighting(element, content) {

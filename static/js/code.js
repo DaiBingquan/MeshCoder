@@ -68,6 +68,7 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
         this.batchSize = 4; // Number of words to render per frame
         this.lastLineNumber = 0; // Track the last line number
         this.codeDisplay = document.getElementById('codeDisplay');
+        this.codeDisplay.innerHTML = ''; // remove any whitespace inside codeDisplay that would offset the first line
         this.isWrapMode = false; // Text wrapping mode status
         this.wrapToggleBtn = null; // Reference to wrap toggle button
         this.fullscreenModal = document.getElementById('fullscreenModal');
@@ -171,7 +172,7 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
                     }
                     const lineNumber = document.createElement('span');
                     lineNumber.className = 'code-line-number';
-                    lineNumber.textContent = currentLineNumber.toString().padStart(2);
+                    lineNumber.textContent = currentLineNumber.toString().padStart(2, '0');
                     container.appendChild(lineNumber);
                     currentLineNumber++;
                 }
@@ -275,7 +276,7 @@ bridge_edge_loops(name='cushion_12', profile_name=['curve_1_12', 'curve_2_12', '
             
             const lineNumber = document.createElement('span');
             lineNumber.className = 'code-line-number';
-            lineNumber.textContent = wordData.lineNumber.toString().padStart(2);
+            lineNumber.textContent = wordData.lineNumber.toString().padStart(2, '0');
             span.appendChild(lineNumber);
             
             this.lastLineNumber = wordData.lineNumber;

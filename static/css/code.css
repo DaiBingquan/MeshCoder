@@ -59,11 +59,11 @@ body {
     justify-content: normal !important;
 }
 
-/* Fix first element positioning */
+/* Fix first element positioning
 .code-display .code-word:first-child {
     vertical-align: top;
     position: relative;
-}
+} */
 
 /* Wrap toggle button and fullscreen toggle button - positioned relative to container */
 .wrap-toggle-btn,

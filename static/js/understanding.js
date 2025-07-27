@@ -1,181 +1,121 @@
 // Shape Understanding Interactive Features
-import * as THREE from 'three';
 
 class ShapeUnderstanding {
     constructor() {
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.mesh = null;
-        this.originalMesh = null;
-        this.isWireframe = false;
+        this.codeDisplay = null;
+        this.isWrapMode = false;
         this.isProcessing = false;
+        this.armchairCode = `# armchair mesh generation
+create_primitive(name='back_sofa_board_8', primitive_type='cube', 
+                location=[0, -0.101, -0.39], 
+                scale=[0.32, 0.1, 0.31])
+
+create_primitive(name='sofa_board_9', primitive_type='cube', 
+                location=[0, -0.371, 0.041], 
+                scale=[0.33, 0.05, 0.33])
+
+create_primitive(name='cushion_11', primitive_type='cube', 
+                location=[0, -0.201, -0.08], 
+                scale=[0.42, 0.13, 0.32])
+
+create_curve(name='arm_7', control_points=[
+    [[-0.278, 0.218, 0.499], [-0.215, -0.421, 0.499]]
+], smoothness=0.75)
+
+create_curve(name='arm_10', control_points=[
+    [[0.278, 0.218, 0.499], [0.215, -0.421, 0.499]]
+], smoothness=0.75)
+
+create_curve(name='leg_1', control_points=[
+    [[-0.39, -0.4, -0.31], [-0.39, -0.48, -0.31]]
+], thickness=0.01)
+
+create_curve(name='leg_2', control_points=[
+    [[-0.39, -0.4, 0.18], [-0.39, -0.48, 0.18]]
+], thickness=0.01)
+
+create_curve(name='leg_3', control_points=[
+    [[-0.21, -0.4, 0.26], [-0.21, -0.49, 0.26]]
+], thickness=0.01)
+
+create_curve(name='leg_4', control_points=[
+    [[0.21, -0.4, 0.26], [0.21, -0.49, 0.26]]
+], thickness=0.01)
+
+create_curve(name='leg_5', control_points=[
+    [[0.39, -0.4, -0.31], [0.39, -0.48, -0.31]]
+], thickness=0.01)
+
+create_curve(name='leg_6', control_points=[
+    [[0.39, -0.4, 0.18], [0.39, -0.48, 0.18]]
+], thickness=0.01)
+
+# Try changing primitive_type or adjust scale/location values!`;
         
         this.init();
         this.setupEventListeners();
     }
 
     init() {
-        this.initViewer();
-        this.loadMesh();
+        this.initCodeDisplay();
+        this.renderCode();
     }
 
-    initViewer() {
-        const container = document.getElementById('understandingMeshViewer');
-        if (!container) return;
+    initCodeDisplay() {
+        this.codeDisplay = document.getElementById('understandingCodeDisplay');
+        if (!this.codeDisplay) {
+            console.log('Understanding code display not found');
+            return;
+        }
+    }
 
-        // Scene setup
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xf5f5f5);
+    renderCode() {
+        if (!this.codeDisplay) return;
 
-        // Camera setup
-        this.camera = new THREE.PerspectiveCamera(
-            75,
-            container.offsetWidth / container.offsetHeight,
-            0.1,
-            1000
-        );
-        this.camera.position.set(3, 2, 3);
-
-        // Renderer setup
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.renderer.setSize(container.offsetWidth, container.offsetHeight);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        const lines = this.armchairCode.split('\n');
+        let html = '';
         
-        // Clear loading indicator and add renderer
-        container.innerHTML = '';
-        container.appendChild(this.renderer.domElement);
+        lines.forEach((line, index) => {
+            const lineNumber = index + 1;
+            const highlightedLine = this.applySyntaxHighlighting(line);
+            html += `<div class="code-line" data-line="${lineNumber}">`;
+            html += `<span class="code-line-number">${lineNumber}</span>`;
+            html += `<span class="code-content">${highlightedLine}</span>`;
+            html += `</div>`;
+        });
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-        this.scene.add(ambientLight);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 5, 5);
-        directionalLight.castShadow = true;
-        this.scene.add(directionalLight);
-
-        // Controls (simplified mouse interaction)
-        this.setupMouseControls();
-
-        // Start render loop
-        this.animate();
+        this.codeDisplay.innerHTML = html;
     }
 
-    loadMesh() {
-        // Create a sofa-like geometry for demonstration
-        const sofaGroup = new THREE.Group();
-
-        // Base/seat
-        const seatGeometry = new THREE.BoxGeometry(1.8, 0.2, 0.8);
-        const seatMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
-        const seat = new THREE.Mesh(seatGeometry, seatMaterial);
-        seat.position.set(0, 0.5, 0);
-        seat.userData = { part: 'seat', highlight: false };
-        sofaGroup.add(seat);
-
-        // Backrest
-        const backGeometry = new THREE.BoxGeometry(1.8, 0.6, 0.1);
-        const backMaterial = new THREE.MeshLambertMaterial({ color: 0x654321 });
-        const backrest = new THREE.Mesh(backGeometry, backMaterial);
-        backrest.position.set(0, 0.8, -0.35);
-        backrest.userData = { part: 'backrest', highlight: false };
-        sofaGroup.add(backrest);
-
-        // Legs
-        const legGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.4);
-        const legMaterial = new THREE.MeshLambertMaterial({ color: 0x2F1B14 });
+    applySyntaxHighlighting(line) {
+        // Basic syntax highlighting for the armchair code
+        let highlighted = line;
         
-        const legPositions = [
-            [-0.8, 0.2, -0.3],
-            [0.8, 0.2, -0.3],
-            [-0.8, 0.2, 0.3],
-            [0.8, 0.2, 0.3]
-        ];
-
-        legPositions.forEach((pos, index) => {
-            const leg = new THREE.Mesh(legGeometry, legMaterial);
-            leg.position.set(pos[0], pos[1], pos[2]);
-            leg.userData = { part: 'legs', highlight: false, legIndex: index };
-            sofaGroup.add(leg);
-        });
-
-        // Arms
-        const armGeometry = new THREE.BoxGeometry(0.15, 0.5, 0.8);
-        const armMaterial = new THREE.MeshLambertMaterial({ color: 0x654321 });
+        // Comments
+        highlighted = highlighted.replace(/(#.*$)/g, '<span class="comment">$1</span>');
         
-        [-1, 1].forEach((side, index) => {
-            const arm = new THREE.Mesh(armGeometry, armMaterial);
-            arm.position.set(side * 0.975, 0.75, 0);
-            arm.userData = { part: 'arms', highlight: false, armIndex: index };
-            sofaGroup.add(arm);
-        });
-
-        this.mesh = sofaGroup;
-        this.originalMesh = sofaGroup.clone();
-        this.scene.add(sofaGroup);
-
-        // Center the camera on the object
-        const box = new THREE.Box3().setFromObject(sofaGroup);
-        const center = box.getCenter(new THREE.Vector3());
-        this.camera.lookAt(center);
+        // Function names
+        highlighted = highlighted.replace(/\b(create_primitive|create_curve)\b/g, '<span class="function">$1</span>');
+        
+        // Keywords
+        highlighted = highlighted.replace(/\b(name|primitive_type|location|scale|control_points|smoothness|thickness)\b/g, '<span class="keyword">$1</span>');
+        
+        // Strings
+        highlighted = highlighted.replace(/'([^']*)'/g, '<span class="string">\'$1\'</span>');
+        
+        // Numbers
+        highlighted = highlighted.replace(/\b(-?\d*\.?\d+)\b/g, '<span class="number">$1</span>');
+        
+        return highlighted;
     }
 
-    setupMouseControls() {
-        let isMouseDown = false;
-        let mouseX = 0;
-        let mouseY = 0;
 
-        const container = this.renderer.domElement;
-
-        container.addEventListener('mousedown', (e) => {
-            isMouseDown = true;
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        container.addEventListener('mousemove', (e) => {
-            if (!isMouseDown) return;
-
-            const deltaX = e.clientX - mouseX;
-            const deltaY = e.clientY - mouseY;
-
-            // Rotate camera around the object
-            const spherical = new THREE.Spherical();
-            spherical.setFromVector3(this.camera.position);
-            spherical.theta -= deltaX * 0.01;
-            spherical.phi += deltaY * 0.01;
-            spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
-
-            this.camera.position.setFromSpherical(spherical);
-            this.camera.lookAt(0, 0.5, 0);
-
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        container.addEventListener('mouseup', () => {
-            isMouseDown = false;
-        });
-
-        container.addEventListener('wheel', (e) => {
-            const scale = e.deltaY > 0 ? 1.1 : 0.9;
-            this.camera.position.multiplyScalar(scale);
-        });
-    }
 
     setupEventListeners() {
-        // Reset view button
-        const resetBtn = document.getElementById('understandingResetViewBtn');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => this.resetView());
-        }
-
-        // Wireframe toggle
-        const wireframeBtn = document.getElementById('understandingWireframeBtn');
-        if (wireframeBtn) {
-            wireframeBtn.addEventListener('click', () => this.toggleWireframe());
+        // Wrap toggle button
+        const wrapToggleBtn = document.getElementById('understandingWrapToggleBtn');
+        if (wrapToggleBtn) {
+            wrapToggleBtn.addEventListener('click', () => this.toggleWrapMode());
         }
 
         // Question buttons
@@ -193,69 +133,70 @@ class ShapeUnderstanding {
             const questionType = item.getAttribute('data-question');
             
             item.addEventListener('mouseenter', () => {
-                this.highlightMeshPart(questionType, true);
+                this.highlightCodeSection(questionType, true);
             });
             
             item.addEventListener('mouseleave', () => {
-                this.highlightMeshPart(questionType, false);
+                this.highlightCodeSection(questionType, false);
             });
         });
     }
 
-    resetView() {
-        this.camera.position.set(3, 2, 3);
-        this.camera.lookAt(0, 0.5, 0);
-    }
-
-    toggleWireframe() {
-        this.isWireframe = !this.isWireframe;
+    toggleWrapMode() {
+        this.isWrapMode = !this.isWrapMode;
         
-        if (this.mesh) {
-            this.mesh.traverse((child) => {
-                if (child.isMesh) {
-                    child.material.wireframe = this.isWireframe;
-                }
-            });
+        if (this.codeDisplay) {
+            this.codeDisplay.classList.toggle('wrap-mode', this.isWrapMode);
         }
         
-        const btn = document.getElementById('understandingWireframeBtn');
+        const btn = document.getElementById('understandingWrapToggleBtn');
         if (btn) {
-            btn.textContent = this.isWireframe ? 'Hide Wireframe' : 'Toggle Wireframe';
+            btn.classList.toggle('active', this.isWrapMode);
         }
     }
 
-    highlightMeshPart(questionType, highlight) {
-        if (!this.mesh) return;
+    highlightCodeSection(questionType, highlight) {
+        if (!this.codeDisplay) return;
 
-        const highlightColor = 0xff6b6b;
-        const originalColors = {
-            seat: 0x8B4513,
-            backrest: 0x654321,
-            legs: 0x2F1B14,
-            arms: 0x654321
-        };
+        // Remove existing highlights
+        const codeLines = this.codeDisplay.querySelectorAll('.code-line');
+        codeLines.forEach(line => line.classList.remove('highlight'));
 
-        this.mesh.traverse((child) => {
-            if (child.isMesh && child.userData.part) {
-                let shouldHighlight = false;
+        if (!highlight) return;
 
-                switch (questionType) {
-                    case 'legs':
-                        shouldHighlight = child.userData.part === 'legs';
-                        break;
-                    case 'cushion':
-                        shouldHighlight = child.userData.part === 'seat' || child.userData.part === 'backrest';
-                        break;
-                    case 'material':
-                    case 'dimensions':
-                    case 'style':
-                        shouldHighlight = true; // Highlight entire object
-                        break;
-                }
+        // Add highlights based on question type
+        switch (questionType) {
+            case 'legs':
+                // Highlight all leg-related lines (leg_1 through leg_6)
+                this.highlightLinesContaining(['leg_1', 'leg_2', 'leg_3', 'leg_4', 'leg_5', 'leg_6']);
+                break;
+            case 'arms':
+                // Highlight armrest lines
+                this.highlightLinesContaining(['arm_7', 'arm_10']);
+                break;
+            case 'components':
+                // Highlight main structural components
+                this.highlightLinesContaining(['back_sofa_board_8', 'sofa_board_9', 'cushion_11']);
+                break;
+            case 'geometry':
+                // Highlight primitive type definitions
+                this.highlightLinesContaining(['primitive_type', 'create_primitive', 'create_curve']);
+                break;
+            case 'positioning':
+                // Highlight location and scale parameters
+                this.highlightLinesContaining(['location', 'scale']);
+                break;
+        }
+    }
 
-                if (shouldHighlight) {
-                    child.material.color.setHex(highlight ? highlightColor : originalColors[child.userData.part] || originalColors.seat);
-                }
+    highlightLinesContaining(keywords) {
+        if (!this.codeDisplay) return;
+
+        const codeLines = this.codeDisplay.querySelectorAll('.code-line');
+        codeLines.forEach(line => {
+            const content = line.textContent.toLowerCase();
+            if (keywords.some(keyword => content.includes(keyword.toLowerCase()))) {
+                line.classList.add('highlight');
             }
         });
     }
@@ -275,8 +216,8 @@ class ShapeUnderstanding {
         // Show processing animation
         this.startProcessingAnimation();
 
-        // Highlight relevant mesh parts
-        this.highlightMeshPart(questionType, true);
+        // Highlight relevant code sections
+        this.highlightCodeSection(questionType, true);
 
         // Simulate processing delay
         await this.simulateProcessing();
@@ -296,7 +237,7 @@ class ShapeUnderstanding {
 
         // Reset highlight after a delay
         setTimeout(() => {
-            this.highlightMeshPart(questionType, false);
+            this.highlightCodeSection(questionType, false);
         }, 3000);
 
         this.isProcessing = false;
@@ -334,22 +275,13 @@ class ShapeUnderstanding {
         });
     }
 
-    animate() {
-        requestAnimationFrame(() => this.animate());
-        
-        if (this.renderer && this.scene && this.camera) {
-            this.renderer.render(this.scene, this.camera);
-        }
-    }
-
-    // Handle window resize
+    // Handle window resize for code display
     handleResize() {
-        const container = document.getElementById('understandingMeshViewer');
-        if (!container || !this.camera || !this.renderer) return;
-
-        this.camera.aspect = container.offsetWidth / container.offsetHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(container.offsetWidth, container.offsetHeight);
+        // Code display automatically adjusts to container size
+        if (this.codeDisplay) {
+            // Trigger re-render if needed
+            this.renderCode();
+        }
     }
 }
 

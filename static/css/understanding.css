@@ -4,15 +4,245 @@
   padding: 3rem 0;
 }
 
-.understanding-mesh-viewer-container {
+.understanding-code-container {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.understanding-model-viewer-wrapper {
+.understanding-code-wrapper {
   position: relative;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+.understanding-code-wrapper .wrap-toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  z-index: 20;
+  transition: all 0.3s ease;
+}
+
+.understanding-code-wrapper .wrap-toggle-btn:hover {
+  background: #e9ecef;
+  border-color: #569cd6;
+  color: #569cd6;
+}
+
+.understanding-code-wrapper .wrap-toggle-btn.active {
+  background: #569cd6;
+  color: white;
+  border-color: #569cd6;
+}
+
+.understanding-code-display {
+  background: #ffffff;
+  padding: 15px;
+  height: 450px;
+  overflow-y: auto;
+  overflow-x: auto;
+  white-space: pre;
+  position: relative;
+  font-size: 11px;
+  line-height: 1.4;
+  min-width: max-content;
+  box-sizing: border-box;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.understanding-code-display.wrap-mode {
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-width: auto;
+  overflow-x: hidden;
+}
+
+/* Understanding code syntax highlighting */
+.understanding-code-display .keyword { 
+  color: #0066cc; 
+  font-weight: bold; 
+}
+
+.understanding-code-display .string { 
+  color: #669900; 
+}
+
+.understanding-code-display .number { 
+  color: #ff6600; 
+  display: inline !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  font-size: inherit !important;
+  height: auto !important;
+  margin-right: 0 !important;
+  min-width: auto !important;
+  padding: 0 !important;
+  text-align: inherit !important;
+  vertical-align: baseline !important;
+}
+
+.understanding-code-display .comment { 
+  color: #999999; 
+  font-style: italic; 
+}
+
+.understanding-code-display .function { 
+  color: #cc0066; 
+  font-weight: bold; 
+}
+
+.understanding-code-display .code-line {
+  display: block;
+  margin-bottom: 0;
+  white-space: pre;
+  min-width: max-content;
+}
+
+.understanding-code-display.wrap-mode .code-line {
+  white-space: pre-wrap;
+  min-width: auto;
+}
+
+.understanding-code-display .code-line-number {
+  color: #999999;
+  margin-right: 10px;
+  user-select: none;
+  display: inline-block;
+  width: 25px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.understanding-code-display .code-word {
+  opacity: 0;
+  animation: wordPop 0.1s ease forwards;
+  display: inline;
+  white-space: pre;
+}
+
+.understanding-code-display.wrap-mode .code-word {
+  white-space: pre-wrap;
+}
+
+@keyframes wordPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Highlighted code sections */
+.understanding-code-display .code-line.highlight {
+  background-color: rgba(86, 156, 214, 0.1);
+  border-left: 3px solid #569cd6;
+  padding-left: 10px;
+  margin-left: -13px;
+}
+
+/* Code scrollbar styling */
+.understanding-code-display::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.understanding-code-display::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.understanding-code-display::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.understanding-code-display::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.understanding-code-display::-webkit-scrollbar-corner {
+  background: #f1f1f1;
+}
+
+
+
+/* Flow Arrows */
+.flow-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.arrow-mesh-to-llm {
+  left: calc(41.66% - 15px);
+  width: 30px;
+  height: 2px;
+}
+
+.arrow-llm-to-qa {
+  right: calc(41.66% - 15px);
+  width: 30px;
+  height: 2px;
+}
+
+.arrow-line {
+  width: 24px;
+  height: 2px;
+  background: linear-gradient(to right, #569cd6, #4a8bc2);
+  animation: arrowFlow 2s ease-in-out infinite;
+}
+
+.arrow-head {
+  position: absolute;
+  right: 0;
+  top: -3px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid #4a8bc2;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  animation: arrowPulse 2s ease-in-out infinite;
+}
+
+@keyframes arrowFlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scaleX(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.1);
+  }
+}
+
+@keyframes arrowPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 #understandingMeshViewer {
@@ -247,6 +477,20 @@
   .understanding-qa-container {
     height: auto;
     max-height: 400px;
+  }
+
+  /* Hide arrows on mobile */
+  .flow-arrow {
+    display: none;
+  }
+
+  /* Adjust code layer on mobile */
+  .code-input-layer {
+    opacity: 0.2;
+  }
+  
+  .code-input-content pre {
+    font-size: 0.6rem;
   }
 }
 

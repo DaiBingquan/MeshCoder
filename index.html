@@ -369,24 +369,31 @@
     </div>
   </div>
   
-  <div class="columns is-variable is-6" style="margin-top: 2rem;">
-    <!-- Left Panel: 3D Mesh Viewer -->
+  <div class="columns is-variable is-6" style="margin-top: 2rem; position: relative;">
+    <!-- Left Panel: Generated Code Display -->
     <div class="column is-5">
-      <div class="understanding-mesh-viewer-container">
-        <h4 class="title is-5 has-text-centered">3D Mesh</h4>
-        <div class="understanding-model-viewer-wrapper">
-          <div id="understandingMeshViewer" style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; position: relative;">
-            <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
-              <i class="fas fa-cube fa-3x" style="margin-bottom: 1rem;"></i>
-              <p>Loading 3D Model...</p>
-            </div>
+      <div class="understanding-code-container">
+        <h4 class="title is-5 has-text-centered">Generated Armchair Code</h4>
+        <div class="understanding-code-wrapper">
+          <button class="wrap-toggle-btn" id="understandingWrapToggleBtn" title="Toggle code wrapping">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M15 12L18 15L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="understanding-code-display" id="understandingCodeDisplay">
+            <!-- Armchair code will be rendered here -->
           </div>
         </div>
-        <div class="viewer-controls" style="margin-top: 1rem; text-align: center;">
-          <button class="button is-small is-primary" id="understandingResetViewBtn">Reset View</button>
-          <button class="button is-small is-info" id="understandingWireframeBtn">Toggle Wireframe</button>
-        </div>
       </div>
+    </div>
+    
+    <!-- Arrow from Mesh to LLM -->
+    <div class="flow-arrow arrow-mesh-to-llm">
+      <div class="arrow-line"></div>
+      <div class="arrow-head"></div>
     </div>
     
     <!-- Middle Panel: LLM Processing -->
@@ -407,78 +414,84 @@
       </div>
     </div>
     
+    <!-- Arrow from LLM to Q&A -->
+    <div class="flow-arrow arrow-llm-to-qa">
+      <div class="arrow-line"></div>
+      <div class="arrow-head"></div>
+    </div>
+    
     <!-- Right Panel: Questions and Answers -->
     <div class="column is-5">
       <div class="understanding-qa-container">
         <h4 class="title is-5 has-text-centered">Shape Analysis</h4>
         <div class="qa-wrapper">
-          <div class="question-set" id="questionSet">
+                    <div class="question-set" id="questionSet">
             <div class="qa-item" data-question="legs">
               <div class="question">
-                <span class="question-icon">🪑</span>
-                <span class="question-text">How many legs does this sofa have?</span>
+                <span class="question-icon">Q:</span>
+                <span class="question-text">How many legs does this armchair have?</span>
                 <button class="ask-button" data-target="legs">Ask</button>
               </div>
               <div class="answer" id="answer-legs" style="display: none;">
                 <div class="answer-content">
                   <span class="answer-icon">🤖</span>
-                  <span class="answer-text">This sofa has 4 legs positioned at the corners of the base structure. Each leg provides stable support for the seating frame.</span>
+                  <span class="answer-text">This armchair has 6 legs (leg_1 through leg_6) created using curve primitives with very thin thickness (0.01). They are positioned at different points around the chair for optimal stability.</span>
                 </div>
               </div>
             </div>
             
-            <div class="qa-item" data-question="cushion">
+            <div class="qa-item" data-question="arms">
               <div class="question">
-                <span class="question-icon">📏</span>
-                <span class="question-text">How big is the cushion seat?</span>
-                <button class="ask-button" data-target="cushion">Ask</button>
+                <span class="question-icon">Q:</span>
+                <span class="question-text">How are the armrests constructed?</span>
+                <button class="ask-button" data-target="arms">Ask</button>
               </div>
-              <div class="answer" id="answer-cushion" style="display: none;">
+              <div class="answer" id="answer-arms" style="display: none;">
                 <div class="answer-content">
                   <span class="answer-icon">🤖</span>
-                  <span class="answer-text">The main cushion seat measures approximately 1.8 units in width and 0.8 units in depth, providing comfortable seating space for 2-3 people.</span>
+                  <span class="answer-text">The armrests (arm_7 and arm_10) are created using curved primitives with control points defining smooth flowing lines from top to bottom, with 0.75 smoothness for elegant curves.</span>
                 </div>
               </div>
             </div>
             
-            <div class="qa-item" data-question="material">
+            <div class="qa-item" data-question="components">
               <div class="question">
-                <span class="question-icon">🏗️</span>
-                <span class="question-text">What materials compose this furniture?</span>
-                <button class="ask-button" data-target="material">Ask</button>
+                <span class="question-icon">Q:</span>
+                <span class="question-text">What are the main structural components?</span>
+                <button class="ask-button" data-target="components">Ask</button>
               </div>
-              <div class="answer" id="answer-material" style="display: none;">
+              <div class="answer" id="answer-components" style="display: none;">
                 <div class="answer-content">
                   <span class="answer-icon">🤖</span>
-                  <span class="answer-text">The sofa consists of a wooden frame structure for the base and legs, with fabric or leather cushioning for the seat and backrest components.</span>
+                  <span class="answer-text">The armchair consists of 4 main parts: back_sofa_board_8 (backrest), sofa_board_9 (base seat), cushion_11 (comfortable padding), and 2 curved armrests for side support.</span>
                 </div>
               </div>
             </div>
             
-            <div class="qa-item" data-question="dimensions">
+            <div class="qa-item" data-question="geometry">
               <div class="question">
-                <span class="question-icon">📐</span>
-                <span class="question-text">What are the overall dimensions?</span>
-                <button class="ask-button" data-target="dimensions">Ask</button>
+                <span class="question-icon">Q:</span>
+                <span class="question-text">What geometric primitives are used?</span>
+                <button class="ask-button" data-target="geometry">Ask</button>
               </div>
-              <div class="answer" id="answer-dimensions" style="display: none;">
+              <div class="answer" id="answer-geometry" style="display: none;">
                 <div class="answer-content">
                   <span class="answer-icon">🤖</span>
-                  <span class="answer-text">The sofa measures approximately 2.0 units in length, 0.9 units in width, and 0.8 units in height, making it suitable for standard living room spaces.</span>
+                  <span class="answer-text">The design uses cube primitives for the main structural elements (backrest, seat, cushion) and curve primitives for the flowing armrests and thin support legs.</span>
                 </div>
               </div>
             </div>
             
-            <div class="qa-item" data-question="style">
+            <div class="qa-item" data-question="positioning">
               <div class="question">
-                <span class="question-icon">🎨</span>
-                <span class="question-text">What style category does this belong to?</span>
-                <button class="ask-button" data-target="style">Ask</button>
+                <span class="question-icon">Q:</span>
+                <span class="question-text">How is the chair positioned in space?</span>
+                <button class="ask-button" data-target="positioning">Ask</button>
               </div>
-              <div class="answer" id="answer-style" style="display: none;">
+              <div class="answer" id="answer-positioning" style="display: none;">
                 <div class="answer-content">
                   <span class="answer-icon">🤖</span>
-                  <span class="answer-text">This appears to be a modern minimalist sofa design with clean lines, rectangular cushions, and a simple geometric structure typical of contemporary furniture.</span>
+                  <span class="answer-text">The chair is centered around origin (0,0) with the backrest at y=-0.101, seat at y=-0.371, and cushion at y=-0.201, creating a layered seating arrangement with proper depth.</span>
                 </div>
               </div>
             </div>

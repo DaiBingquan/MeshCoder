@@ -289,14 +289,35 @@ create_curve(name='leg_6', control_points=[
     }
 
     highlightMeshPartByName(meshName) {
-        // Find and highlight the corresponding function block
-        const functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
+        console.log(`Attempting to highlight mesh: ${meshName}`);
+        console.log('Available mesh parts:', this.meshParts.map(p => p.name));
+        
+        // Try direct match first
+        let functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
+        
+        // If no direct match, try partial matching for similar names
+        if (!functionBlock) {
+            // Try finding by partial name matching (removing spaces, underscores)
+            const normalizedMeshName = meshName.replace(/[\s_-]/g, '').toLowerCase();
+            const meshPart = this.meshParts.find(part => {
+                const normalizedPartName = part.name.replace(/[\s_-]/g, '').toLowerCase();
+                return normalizedPartName.includes(normalizedMeshName) || 
+                       normalizedMeshName.includes(normalizedPartName);
+            });
+            
+            if (meshPart) {
+                functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshPart.name}"]`);
+                console.log(`Found partial match: ${meshName} -> ${meshPart.name}`);
+            }
+        }
+        
         if (functionBlock) {
             this.highlightCodeFunctionBlock(functionBlock);
             this.highlightMeshObject(meshName);
             console.log(`Highlighting mesh: ${meshName}`);
         } else {
             console.log(`Function block not found for mesh: ${meshName}`);
+            console.log('Available function blocks:', Array.from(this.codeEditor.querySelectorAll('[data-mesh-name]')).map(b => b.dataset.meshName));
         }
     }
 
@@ -638,7 +659,10 @@ create_curve(name='leg_6', control_points=[
 
     simulatePrimitiveChange(primitiveType) {
         console.log(`Simulating primitive change to: ${primitiveType}`);
-        // Could add camera animation here if needed
+        // Actually update the mesh geometry in the 3D viewer
+        if (this.threeViewer) {
+            this.threeViewer.updatePrimitiveType(primitiveType);
+        }
     }
 
     simulateScaleChange(scaleValues) {

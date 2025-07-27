@@ -416,6 +416,66 @@ export class ThreeViewer {
         }
     }
     
+        // Create primitive geometry based on type
+    createPrimitiveGeometry(primitiveType, scale = [1, 1, 1]) {
+        switch (primitiveType.toLowerCase()) {
+            case 'cube':
+                return new THREE.BoxGeometry(scale[0], scale[1], scale[2]);
+            case 'cylinder':
+                return new THREE.CylinderGeometry(scale[0] * 0.5, scale[0] * 0.5, scale[1], 16);
+            case 'sphere':
+                return new THREE.SphereGeometry(scale[0] * 0.5, 16, 16);
+            default:
+                console.warn(`Unknown primitive type: ${primitiveType}, using cube`);
+                return new THREE.BoxGeometry(scale[0], scale[1], scale[2]);
+        }
+    }
+
+    // Update primitive type for demonstration
+    updatePrimitiveType(primitiveType) {
+        if (!this.model) return;
+        
+        // Find the first mesh to demonstrate the change
+        let targetMesh = null;
+        this.model.traverse((child) => {
+            if (child.isMesh && !targetMesh) {
+                targetMesh = child;
+            }
+        });
+        
+        if (targetMesh) {
+            // Get current scale from the mesh
+            const currentScale = [
+                targetMesh.scale.x,
+                targetMesh.scale.y,
+                targetMesh.scale.z
+            ];
+            
+            // Create new geometry
+            const newGeometry = this.createPrimitiveGeometry(primitiveType, currentScale);
+            
+            // Dispose old geometry
+            if (targetMesh.geometry) {
+                targetMesh.geometry.dispose();
+            }
+            
+            // Apply new geometry
+            targetMesh.geometry = newGeometry;
+            
+            console.log(`Updated mesh geometry to: ${primitiveType}`);
+            
+            // Add visual feedback with brief color change
+            if (targetMesh.material) {
+                const originalColor = targetMesh.material.color.clone();
+                targetMesh.material.color.setHex(0x00ff00);
+                
+                setTimeout(() => {
+                    targetMesh.material.color.copy(originalColor);
+                }, 1000);
+            }
+        }
+    }
+
     dispose() {
         // Clean up resources
         if (this.renderer) {
@@ -424,15 +484,15 @@ export class ThreeViewer {
                 this.container.removeChild(this.renderer.domElement);
             }
         }
-        
+
         if (this.controls) {
             this.controls.dispose();
         }
-        
+
         // Clean up materials
         this.originalMaterials.clear();
         this.wireframeMaterials.clear();
-        
+
         // Remove event listeners
         window.removeEventListener('resize', this.onWindowResize);
     }

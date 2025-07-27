@@ -399,3 +399,110 @@ body {
 .code-display * {
   box-sizing: border-box;
 }
+
+/* Shape Editing Section Styles */
+.mesh-viewer-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e5e5;
+}
+
+.code-editor-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e5e5;
+}
+
+.model-viewer-wrapper {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.editor-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.code-editor {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  height: 350px;
+  overflow-y: auto;
+  background: #ffffff;
+  position: relative;
+  padding: 10px;
+}
+
+.code-line {
+  padding: 2px 8px;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 1.5em;
+}
+
+.code-line:hover {
+  background-color: #f0f8ff;
+  border-left-color: #4a9eff;
+}
+
+.code-line.highlighted {
+  background-color: #fff3cd;
+  border-left-color: #ffc107;
+  animation: highlight-pulse 1s ease-in-out;
+}
+
+.code-line.mesh-highlighted {
+  background-color: #d1ecf1;
+  border-left-color: #17a2b8;
+}
+
+@keyframes highlight-pulse {
+  0% { background-color: #fff3cd; }
+  50% { background-color: #ffe69c; }
+  100% { background-color: #fff3cd; }
+}
+
+/* Syntax highlighting for the editor */
+.editor-keyword { color: #0066cc; font-weight: bold; }
+.editor-string { color: #cc7700; }
+.editor-number { color: #006600; }
+.editor-comment { color: #008000; font-style: italic; }
+.editor-function { color: #9900cc; }
+.editor-variable { color: #0088cc; }
+
+.viewer-controls .button {
+  margin: 0 0.25rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .code-editor {
+    height: 250px;
+    font-size: 12px;
+  }
+  
+  .model-viewer-wrapper model-viewer {
+    height: 300px !important;
+  }
+  
+  .mesh-viewer-container,
+  .code-editor-container {
+    margin-bottom: 1rem;
+  }
+}

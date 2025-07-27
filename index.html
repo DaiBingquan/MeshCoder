@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="static/css/index.css">
   <link rel="stylesheet" href="static/css/code.css">
   <link rel="stylesheet" href="static/css/editing.css">
+  <link rel="stylesheet" href="static/css/understanding.css">
   <link rel="icon" href="assets/imgs/pjlab.png">
 
   <script defer src="static/js/fontawesome.all.min.js"></script>
@@ -360,9 +361,146 @@
 </section>
 
 
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
+<section class="section" id="shape-understanding">
+  <div class="columns is-centered has-text-centered">
+    <div class="column is-four-fifths">
+      <h2 class="title is-3">Shape Understanding</h2>
+      <p class="subtitle">AI-powered 3D shape analysis and reasoning</p>
+    </div>
+  </div>
+  
+  <div class="columns is-variable is-6" style="margin-top: 2rem;">
+    <!-- Left Panel: 3D Mesh Viewer -->
+    <div class="column is-5">
+      <div class="understanding-mesh-viewer-container">
+        <h4 class="title is-5 has-text-centered">3D Mesh</h4>
+        <div class="understanding-model-viewer-wrapper">
+          <div id="understandingMeshViewer" style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; position: relative;">
+            <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
+              <i class="fas fa-cube fa-3x" style="margin-bottom: 1rem;"></i>
+              <p>Loading 3D Model...</p>
+            </div>
+          </div>
+        </div>
+        <div class="viewer-controls" style="margin-top: 1rem; text-align: center;">
+          <button class="button is-small is-primary" id="understandingResetViewBtn">Reset View</button>
+          <button class="button is-small is-info" id="understandingWireframeBtn">Toggle Wireframe</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Middle Panel: LLM Processing -->
+    <div class="column is-2 has-text-centered">
+      <div class="llm-processing-indicator">
+        <div style="margin-top: 8rem;">
+          <div class="processing-icon" id="processingIcon">
+            <i class="fas fa-brain fa-3x" style="color: #569cd6; margin-bottom: 1rem;"></i>
+          </div>
+          <h5 class="title is-6">LLM Models</h5>
+          <p class="is-size-7 has-text-grey">Processing with generated code as input...</p>
+          <div class="processing-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Panel: Questions and Answers -->
+    <div class="column is-5">
+      <div class="understanding-qa-container">
+        <h4 class="title is-5 has-text-centered">Shape Analysis</h4>
+        <div class="qa-wrapper">
+          <div class="question-set" id="questionSet">
+            <div class="qa-item" data-question="legs">
+              <div class="question">
+                <span class="question-icon">🪑</span>
+                <span class="question-text">How many legs does this sofa have?</span>
+                <button class="ask-button" data-target="legs">Ask</button>
+              </div>
+              <div class="answer" id="answer-legs" style="display: none;">
+                <div class="answer-content">
+                  <span class="answer-icon">🤖</span>
+                  <span class="answer-text">This sofa has 4 legs positioned at the corners of the base structure. Each leg provides stable support for the seating frame.</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="qa-item" data-question="cushion">
+              <div class="question">
+                <span class="question-icon">📏</span>
+                <span class="question-text">How big is the cushion seat?</span>
+                <button class="ask-button" data-target="cushion">Ask</button>
+              </div>
+              <div class="answer" id="answer-cushion" style="display: none;">
+                <div class="answer-content">
+                  <span class="answer-icon">🤖</span>
+                  <span class="answer-text">The main cushion seat measures approximately 1.8 units in width and 0.8 units in depth, providing comfortable seating space for 2-3 people.</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="qa-item" data-question="material">
+              <div class="question">
+                <span class="question-icon">🏗️</span>
+                <span class="question-text">What materials compose this furniture?</span>
+                <button class="ask-button" data-target="material">Ask</button>
+              </div>
+              <div class="answer" id="answer-material" style="display: none;">
+                <div class="answer-content">
+                  <span class="answer-icon">🤖</span>
+                  <span class="answer-text">The sofa consists of a wooden frame structure for the base and legs, with fabric or leather cushioning for the seat and backrest components.</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="qa-item" data-question="dimensions">
+              <div class="question">
+                <span class="question-icon">📐</span>
+                <span class="question-text">What are the overall dimensions?</span>
+                <button class="ask-button" data-target="dimensions">Ask</button>
+              </div>
+              <div class="answer" id="answer-dimensions" style="display: none;">
+                <div class="answer-content">
+                  <span class="answer-icon">🤖</span>
+                  <span class="answer-text">The sofa measures approximately 2.0 units in length, 0.9 units in width, and 0.8 units in height, making it suitable for standard living room spaces.</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="qa-item" data-question="style">
+              <div class="question">
+                <span class="question-icon">🎨</span>
+                <span class="question-text">What style category does this belong to?</span>
+                <button class="ask-button" data-target="style">Ask</button>
+              </div>
+              <div class="answer" id="answer-style" style="display: none;">
+                <div class="answer-content">
+                  <span class="answer-icon">🤖</span>
+                  <span class="answer-text">This appears to be a modern minimalist sofa design with clean lines, rectangular cushions, and a simple geometric structure typical of contemporary furniture.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Features Section -->
+  <div class="columns is-centered" style="margin-top: 2rem;">
+    <div class="column is-four-fifths">
+      <div class="notification is-success is-light">
+        <p><strong>🧠 AI Understanding Features:</strong></p>
+        <ul>
+          <li><strong>Geometric Analysis:</strong> Automatic detection of dimensions, shapes, and structural components</li>
+          <li><strong>Semantic Understanding:</strong> Recognition of object parts, materials, and functional elements</li>
+          <li><strong>Interactive Q&A:</strong> Ask questions about shape properties and receive detailed AI responses</li>
+          <li><strong>Visual Correlation:</strong> Click questions to highlight relevant mesh regions</li>
+          <li><strong>Multi-modal Reasoning:</strong> Combines 3D geometry with natural language understanding</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -400,6 +538,7 @@
 
 <script src="static/js/code.js"></script>
 <script type="module" src="static/js/editing.js"></script>
+<script type="module" src="static/js/understanding.js"></script>
 
 </body>
 </html>

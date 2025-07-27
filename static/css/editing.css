@@ -1,0 +1,219 @@
+/* Shape Editor Styles */
+.mesh-viewer-container {
+    position: relative;
+}
+
+.model-viewer-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.code-editor-container {
+    position: relative;
+}
+
+.code-editor-wrapper {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.editor-toolbar {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 8px;
+}
+
+.code-editor {
+    background: #ffffff;
+    padding: 15px;
+    height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    border: none;
+    outline: none;
+}
+
+/* Code highlighting styles */
+.code-line {
+    display: block;
+    padding: 2px 4px;
+    margin: 1px 0;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    position: relative;
+}
+
+.code-line:hover,
+.code-line.code-hover {
+    background-color: #f0f8ff;
+    border-left-color: #4a90e2;
+}
+
+.code-line.mesh-highlighted {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+    box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.3);
+}
+
+.code-line.highlighted {
+    background-color: #d4edda;
+    border-left-color: #28a745;
+    animation: codeLineHighlight 2s ease forwards;
+}
+
+.code-line.code-executed {
+    background-color: #d1ecf1;
+    border-left-color: #17a2b8;
+    animation: codeExecute 2s ease forwards;
+}
+
+@keyframes codeLineHighlight {
+    0% {
+        background-color: #d4edda;
+        transform: scale(1.02);
+    }
+    50% {
+        background-color: #c3e6cb;
+    }
+    100% {
+        background-color: transparent;
+        transform: scale(1);
+    }
+}
+
+@keyframes codeExecute {
+    0% {
+        background-color: #d1ecf1;
+        transform: translateX(-5px);
+    }
+    25% {
+        background-color: #bee5eb;
+        transform: translateX(0);
+    }
+    50% {
+        background-color: #abd5db;
+    }
+    100% {
+        background-color: transparent;
+        transform: translateX(0);
+    }
+}
+
+/* Enhanced editor syntax highlighting */
+.editor-function {
+    color: #d73a49;
+    font-weight: bold;
+}
+
+.editor-variable {
+    color: #6f42c1;
+}
+
+.editor-string {
+    color: #032f62;
+}
+
+.editor-number {
+    color: #005cc5;
+}
+
+.editor-comment {
+    color: #6a737d;
+    font-style: italic;
+}
+
+/* Viewer controls */
+.viewer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.viewer-controls .button {
+    font-size: 12px;
+}
+
+.viewer-controls .button.is-active {
+    background-color: #363636;
+    color: #ffffff;
+    border-color: #363636;
+}
+
+.viewer-controls .button.is-active:hover {
+    background-color: #292929;
+    border-color: #292929;
+}
+
+/* Mesh interaction feedback */
+.mesh-viewer-container::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 8px;
+    height: 8px;
+    background: #28a745;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mesh-viewer-container.mesh-active::after {
+    opacity: 1;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Notification styles for the tips section */
+.notification.is-info.is-light {
+    background-color: #e7f3ff;
+    border-left: 4px solid #4a90e2;
+}
+
+.notification.is-info.is-light code {
+    background-color: #ffffff;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .code-editor {
+        height: 300px;
+        font-size: 12px;
+    }
+    
+    .model-viewer-wrapper model-viewer {
+        height: 300px;
+    }
+    
+    .editor-toolbar {
+        padding: 6px 8px;
+    }
+    
+    .viewer-controls .button {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+} 

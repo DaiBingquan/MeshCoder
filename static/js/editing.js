@@ -1,15 +1,16 @@
 /**
  * Shape Editing Interactive Features
  */
+import { ThreeViewer } from './three-viewer.js';
+
 class ShapeEditor {
     constructor() {
         this.meshViewer = null;
+        this.threeViewer = null;
         this.codeEditor = null;
         this.currentCode = '';
         this.meshParts = [];
         this.isInitialized = false;
-        this.originalMaterials = new Map();
-        this.wireframeMaterials = new Map();
         this.currentHighlightedFunction = null;
         
         // Default code for editing
@@ -341,140 +342,62 @@ create_curve(name='leg_6', control_points=[
     
     setupMeshViewer() {
         if (this.meshViewer) {
-            this.meshViewer.addEventListener('load', () => {
+            // Create Three.js viewer
+            this.threeViewer = new ThreeViewer(this.meshViewer);
+            
+            // Set up event callbacks
+            this.threeViewer.onModelLoaded = (model) => {
                 console.log('3D model loaded successfully');
                 this.indexMeshObjects();
-                this.setupMeshHoverInteractions();
-            });
-            
-            // Add mesh interaction events
-            this.meshViewer.addEventListener('click', (event) => {
-                this.onMeshClick(event);
-            });
-        }
-    }
-
-    setupMeshHoverInteractions() {
-        if (this.meshViewer) {
-            let hoverTimeout;
-            let currentHoveredMesh = null;
-
-            // Add mouse move event for hover detection
-            this.meshViewer.addEventListener('mousemove', (event) => {
-                clearTimeout(hoverTimeout);
-                hoverTimeout = setTimeout(() => {
-                    this.detectHoveredMesh(event);
-                }, 100); // Debounce to avoid too frequent calls
-            });
-
-            this.meshViewer.addEventListener('mouseleave', () => {
-                clearTimeout(hoverTimeout);
-                this.unhighlightAllMeshParts();
-            });
-        }
-    }
-
-    detectHoveredMesh(event) {
-        try {
-            const rect = this.meshViewer.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            
-            // Use model-viewer's built-in hit testing
-            const hit = this.meshViewer.positionAndNormalFromPoint(x, y);
-            
-            if (hit) {
-                const hoveredMeshName = this.findNearestMesh(hit.position);
                 
-                if (hoveredMeshName && hoveredMeshName !== this.currentHoveredMesh) {
-                    // Clear previous highlights
-                    this.unhighlightAllMeshParts();
-                    
-                    // Highlight new mesh and corresponding code
-                    this.highlightMeshAndCode(hoveredMeshName);
-                    this.currentHoveredMesh = hoveredMeshName;
+                // Hide loading indicator
+                const loadingIndicator = this.meshViewer.querySelector('.loading-indicator');
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
                 }
-            } else if (this.currentHoveredMesh) {
-                this.unhighlightAllMeshParts();
-                this.currentHoveredMesh = null;
-            }
-        } catch (error) {
-            // Silently handle errors to avoid console spam
-        }
-    }
-
-    highlightMeshAndCode(meshName) {
-        // Highlight the mesh object
-        this.highlightMeshObject(meshName);
-        
-        // Find and highlight corresponding code function
-        this.highlightMeshPartByName(meshName);
-    }
-
-    unhighlightAllMeshParts() {
-        // Remove code highlights
-        this.unhighlightCodeFunction();
-        
-        // Restore original mesh materials
-        if (this.currentHighlightedMesh && this.meshObjects && this.originalMaterials) {
-            const meshObject = this.meshObjects[this.currentHighlightedMesh];
+            };
             
-            if (meshObject && meshObject.uuid) {
-                const originalMaterial = this.originalMaterials.get(meshObject.uuid);
-                if (originalMaterial) {
-                    meshObject.material = originalMaterial;
+            this.threeViewer.onMeshHover = (meshName, mesh) => {
+                if (meshName) {
+                    this.highlightMeshPartByName(meshName);
+                } else {
+                    this.unhighlightMeshPart();
                 }
-            }
+            };
+            
+            this.threeViewer.onMeshClick = (meshName, mesh) => {
+                if (meshName) {
+                    this.focusMeshPart(meshName);
+                    console.log(`Clicked mesh: ${meshName}`);
+                }
+            };
+            
+            // Load the model
+            this.threeViewer.loadModel('assets/models/armchair.glb');
         }
-        this.currentHighlightedMesh = null;
-        this.currentHoveredMesh = null;
     }
+
+    // These methods are now handled by ThreeViewer callbacks
+    // No longer needed with native Three.js implementation
 
     indexMeshObjects() {
-        // Wait a bit for model-viewer to fully initialize
-        setTimeout(() => {
-            try {
-                // Access the Three.js scene from model-viewer
-                const scene = this.meshViewer.model;
-                this.meshObjects = {};
-                
-                if (scene && typeof scene.traverse === 'function') {
-                    scene.traverse((child) => {
-                        if (child.isMesh && child.name) {
-                            this.meshObjects[child.name] = child;
-                            // Store original material for restoration using UUID as key
-                            this.originalMaterials.set(child.uuid, child.material.clone());
-                            console.log(`Indexed mesh: ${child.name}`);
-                        }
-                    });
-                    console.log('Mesh objects indexed:', Object.keys(this.meshObjects));
-                } else {
-                    console.warn('Model scene not available or not a Three.js scene, using fallback mode');
-                    // Fallback: create mock mesh objects based on identified parts
-                    this.meshObjects = {};
-                    this.meshParts.forEach(part => {
-                        this.meshObjects[part.name] = {
-                            name: part.name,
-                            position: { x: 0, y: 0, z: 0 },
-                            material: null, // Use null for mock objects to avoid material operations
-                            uuid: `mock-${part.name}`
-                        };
-                    });
-                }
-            } catch (error) {
-                console.warn('Error indexing mesh objects:', error);
-                // Fallback to simulation mode
-                this.meshObjects = {};
-                this.meshParts.forEach(part => {
-                    this.meshObjects[part.name] = {
-                        name: part.name,
-                        position: { x: 0, y: 0, z: 0 },
-                        material: null, // Use null for mock objects to avoid material operations
-                        uuid: `mock-${part.name}`
-                    };
-                });
-            }
-        }, 1000);
+        // Get mesh objects from ThreeViewer
+        if (this.threeViewer && this.threeViewer.meshObjects) {
+            this.meshObjects = this.threeViewer.meshObjects;
+            console.log('Mesh objects indexed from ThreeViewer:', Object.keys(this.meshObjects));
+        } else {
+            console.warn('ThreeViewer not available, using fallback mode');
+            // Fallback: create mock mesh objects based on identified parts
+            this.meshObjects = {};
+            this.meshParts.forEach(part => {
+                this.meshObjects[part.name] = {
+                    name: part.name,
+                    position: { x: 0, y: 0, z: 0 },
+                    material: null,
+                    uuid: `mock-${part.name}`
+                };
+            });
+        }
     }
     
     setupEventListeners() {
@@ -562,53 +485,19 @@ create_curve(name='leg_6', control_points=[
     }
 
     highlightMeshObject(meshName) {
-        const meshObject = this.meshObjects[meshName];
-        if (meshObject) {
-            // Store current highlighted mesh for cleanup
-            this.currentHighlightedMesh = meshName;
-            
-            // Check if this is a real Three.js mesh or a mock object
-            if (meshObject.material && typeof meshObject.material.clone === 'function') {
-                try {
-                    // Create highlight material for real Three.js mesh
-                    const highlightMaterial = meshObject.material.clone();
-                    
-                    // Safely set emissive if it exists
-                    if (highlightMaterial.emissive && typeof highlightMaterial.emissive.setHex === 'function') {
-                        highlightMaterial.emissive.setHex(0x444444);
-                    }
-                    
-                    // Safely set color if it exists
-                    if (highlightMaterial.color && typeof highlightMaterial.color.multiplyScalar === 'function') {
-                        highlightMaterial.color.multiplyScalar(1.2);
-                    }
-                    
-                    // Apply highlight
-                    meshObject.material = highlightMaterial;
-                } catch (error) {
-                    console.warn(`Could not highlight mesh material for ${meshName}:`, error);
-                }
-            } else {
-                // For mock objects, just log the highlight action
-                console.log(`Highlighting mock mesh: ${meshName}`);
-            }
+        if (this.threeViewer) {
+            this.threeViewer.highlightMeshByName(meshName);
+        } else {
+            console.log(`Highlighting mesh: ${meshName} (ThreeViewer not available)`);
         }
     }
     
     unhighlightMeshPart() {
         this.unhighlightCodeFunction();
         
-        // Restore original mesh material
-        if (this.currentHighlightedMesh && this.meshObjects && this.originalMaterials) {
-            const meshObject = this.meshObjects[this.currentHighlightedMesh];
-            
-            if (meshObject && meshObject.uuid) {
-                const originalMaterial = this.originalMaterials.get(meshObject.uuid);
-                if (originalMaterial) {
-                    meshObject.material = originalMaterial;
-                }
-            }
-            this.currentHighlightedMesh = null;
+        // Unhighlight mesh through ThreeViewer
+        if (this.threeViewer) {
+            this.threeViewer.unhighlightAllMeshes();
         }
     }
     
@@ -625,62 +514,7 @@ create_curve(name='leg_6', control_points=[
         console.log(`Focusing on mesh part: ${meshName}`);
     }
     
-    onMeshClick(event) {
-        console.log('Mesh clicked, detecting intersected part');
-        
-        try {
-            // Get intersection data from model-viewer
-            const rect = this.meshViewer.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            
-            // Use model-viewer's built-in hit testing
-            const hit = this.meshViewer.positionAndNormalFromPoint(x, y);
-            
-            if (hit) {
-                // Try to find which mesh was clicked by checking proximity to mesh positions
-                let clickedMeshName = this.findNearestMesh(hit.position);
-                
-                if (clickedMeshName) {
-                    this.focusMeshPart(clickedMeshName);
-                    console.log(`Clicked mesh: ${clickedMeshName}`);
-                    return;
-                }
-            }
-        } catch (error) {
-            console.warn('Could not detect clicked mesh part:', error);
-        }
-        
-        // Fallback: highlight a relevant function
-        if (this.meshParts.length > 0) {
-            const randomIndex = Math.floor(Math.random() * this.meshParts.length);
-            this.focusMeshPart(this.meshParts[randomIndex].name);
-        }
-    }
-
-    findNearestMesh(clickPosition) {
-        if (!this.meshObjects) return null;
-        
-        let nearestMesh = null;
-        let minDistance = Infinity;
-        
-        // Check distance to each mesh object
-        for (const [meshName, meshObject] of Object.entries(this.meshObjects)) {
-            const meshPos = meshObject.position;
-            const distance = Math.sqrt(
-                Math.pow(clickPosition.x - meshPos.x, 2) +
-                Math.pow(clickPosition.y - meshPos.y, 2) +
-                Math.pow(clickPosition.z - meshPos.z, 2)
-            );
-            
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestMesh = meshName;
-            }
-        }
-        
-        return nearestMesh;
-    }
+    // Mesh click detection now handled by ThreeViewer callbacks
     
     executeCode() {
         console.log('Executing updated code...');
@@ -804,43 +638,24 @@ create_curve(name='leg_6', control_points=[
 
     simulatePrimitiveChange(primitiveType) {
         console.log(`Simulating primitive change to: ${primitiveType}`);
-        // Brief camera movement to simulate geometry change
-        const currentOrbit = this.meshViewer.cameraOrbit;
-        this.meshViewer.cameraOrbit = '60deg 80deg 2.2m';
-        setTimeout(() => {
-            this.meshViewer.cameraOrbit = currentOrbit || '45deg 75deg 2.5m';
-        }, 600);
+        // Could add camera animation here if needed
     }
 
     simulateScaleChange(scaleValues) {
         console.log(`Simulating scale change to: ${scaleValues}`);
-        // Zoom in/out to simulate scale change
-        const currentOrbit = this.meshViewer.cameraOrbit;
-        this.meshViewer.cameraOrbit = '45deg 75deg 3.0m';
-        setTimeout(() => {
-            this.meshViewer.cameraOrbit = currentOrbit || '45deg 75deg 2.5m';
-        }, 600);
+        // Could add camera animation here if needed
     }
 
     simulateLocationChange(locationValues) {
         console.log(`Simulating location change to: ${locationValues}`);
-        // Pan camera to simulate position change
-        const currentTarget = this.meshViewer.cameraTarget;
-        this.meshViewer.cameraTarget = '0.2m 0.1m 0m';
-        setTimeout(() => {
-            this.meshViewer.cameraTarget = currentTarget || '0m 0m 0m';
-        }, 600);
+        // Could add camera animation here if needed
     }
     
     simulateMeshUpdate() {
-        // Simulate mesh update with a brief rotation animation
-        if (this.meshViewer) {
-            const currentOrbit = this.meshViewer.cameraOrbit;
-            this.meshViewer.cameraOrbit = '45deg 75deg 2m';
-            
-            setTimeout(() => {
-                this.meshViewer.cameraOrbit = currentOrbit || 'auto';
-            }, 1000);
+        // Simulate mesh update with a brief camera movement
+        if (this.threeViewer) {
+            // Simple camera animation could be added here if needed
+            console.log('Simulating mesh update');
         }
     }
     
@@ -864,108 +679,29 @@ create_curve(name='leg_6', control_points=[
     }
     
     resetView() {
-        if (this.meshViewer) {
-            this.meshViewer.cameraTarget = 'auto';
-            this.meshViewer.cameraOrbit = 'auto';
-            this.meshViewer.fieldOfView = 'auto';
+        if (this.threeViewer) {
+            this.threeViewer.resetView();
         }
         console.log('View reset to default');
     }
     
     toggleWireframe() {
-        if (!this.meshViewer) return;
+        if (!this.threeViewer) return;
         
         const wireframeBtn = document.getElementById('wireframeBtn');
         if (!wireframeBtn) return;
         
-        // Toggle button state
-        const isWireframe = wireframeBtn.classList.toggle('is-active');
+        // Toggle wireframe through ThreeViewer
+        const isWireframe = this.threeViewer.toggleWireframe();
+        
+        // Update button state
+        wireframeBtn.classList.toggle('is-active', isWireframe);
         wireframeBtn.textContent = isWireframe ? 'Solid View' : 'Toggle Wireframe';
-        
-        // Wait for model to be fully loaded
-        if (!this.meshViewer.model) {
-            console.log('Model not loaded yet, trying again...');
-            setTimeout(() => this.toggleWireframe(), 500);
-            return;
-        }
-        
-        // Apply wireframe to all meshes in the scene
-        this.applyWireframeToScene(isWireframe);
         
         console.log(`Wireframe mode: ${isWireframe ? 'ON' : 'OFF'}`);
     }
     
-    applyWireframeToScene(enableWireframe) {
-        try {
-            const scene = this.meshViewer.model;
-            if (!scene || typeof scene.traverse !== 'function') {
-                console.warn('Scene not available for wireframe toggle');
-                return;
-            }
-            
-            // Store wireframe materials if not already created
-            if (!this.wireframeMaterials) {
-                this.wireframeMaterials = new Map();
-            }
-            
-            scene.traverse((child) => {
-                if (child.isMesh && child.material) {
-                    this.applyWireframeToMesh(child, enableWireframe);
-                }
-            });
-            
-        } catch (error) {
-            console.warn('Error applying wireframe:', error);
-        }
-    }
-    
-    applyWireframeToMesh(mesh, enableWireframe) {
-        const meshId = mesh.uuid;
-        
-        if (enableWireframe) {
-            // Store original material if not already stored
-            if (!this.originalMaterials) {
-                this.originalMaterials = new Map();
-            }
-            if (!this.originalMaterials.has(meshId)) {
-                this.originalMaterials.set(meshId, mesh.material);
-            }
-            
-            // Create or get wireframe material
-            let wireframeMaterial;
-            if (this.wireframeMaterials.has(meshId)) {
-                wireframeMaterial = this.wireframeMaterials.get(meshId);
-            } else {
-                // Create wireframe material based on original material
-                wireframeMaterial = mesh.material.clone();
-                wireframeMaterial.wireframe = true;
-                wireframeMaterial.color.setHex(0x000000); // Black wireframe
-                wireframeMaterial.transparent = true;
-                wireframeMaterial.opacity = 0.8;
-                
-                // If it's a textured material, remove texture for cleaner wireframe
-                if (wireframeMaterial.map) {
-                    wireframeMaterial.map = null;
-                }
-                if (wireframeMaterial.normalMap) {
-                    wireframeMaterial.normalMap = null;
-                }
-                
-                this.wireframeMaterials.set(meshId, wireframeMaterial);
-            }
-            
-            mesh.material = wireframeMaterial;
-            
-        } else {
-            // Restore original material
-            if (this.originalMaterials && this.originalMaterials.has(meshId)) {
-                mesh.material = this.originalMaterials.get(meshId);
-            }
-        }
-        
-        // Force material update
-        mesh.material.needsUpdate = true;
-    }
+    // Wireframe methods now handled by ThreeViewer
 }
 
 // Initialize shape editor when DOM is ready

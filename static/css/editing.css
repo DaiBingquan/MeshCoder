@@ -29,83 +29,138 @@
 
 .code-editor {
     background: #ffffff;
-    padding: 15px;
     height: 400px;
     overflow-y: auto;
-    overflow-x: auto;
+    overflow-x: hidden;
     font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
     font-size: 13px;
     line-height: 1.5;
     border: none;
     outline: none;
+    padding: 15px;
 }
 
-/* Code highlighting styles */
-.code-line {
-    display: block;
-    padding: 2px 4px;
-    margin: 1px 0;
-    border-radius: 3px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    border-left: 3px solid transparent;
+/* Comment blocks */
+.code-comment-block {
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-left: 3px solid #6a737d;
+    border-radius: 4px;
+}
+
+.code-comment-block .code-line {
+    color: #6a737d;
+    font-style: italic;
+    margin: 2px 0;
+}
+
+/* Function blocks */
+.code-function-block {
     position: relative;
+    margin-bottom: 15px;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    overflow: hidden;
 }
 
-.code-line:hover,
-.code-line.code-hover {
-    background-color: #f0f8ff;
-    border-left-color: #4a90e2;
+.code-function-block:hover {
+    border-color: #4a90e2;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.1);
 }
 
-.code-line.mesh-highlighted {
-    background-color: #fff3cd;
-    border-left-color: #ffc107;
-    box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.3);
+.code-function-block.function-highlighted {
+    border-color: #ffc107;
+    background-color: rgba(255, 243, 205, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
+    animation: functionBlockHighlight 0.3s ease;
 }
 
-.code-line.highlighted {
-    background-color: #d4edda;
-    border-left-color: #28a745;
-    animation: codeLineHighlight 2s ease forwards;
-}
-
-.code-line.code-executed {
-    background-color: #d1ecf1;
-    border-left-color: #17a2b8;
-    animation: codeExecute 2s ease forwards;
-}
-
-@keyframes codeLineHighlight {
+@keyframes functionBlockHighlight {
     0% {
-        background-color: #d4edda;
         transform: scale(1.02);
-    }
-    50% {
-        background-color: #c3e6cb;
+        background-color: rgba(255, 243, 205, 0.4);
     }
     100% {
-        background-color: transparent;
         transform: scale(1);
+        background-color: rgba(255, 243, 205, 0.2);
     }
 }
 
-@keyframes codeExecute {
-    0% {
-        background-color: #d1ecf1;
-        transform: translateX(-5px);
-    }
-    25% {
-        background-color: #bee5eb;
-        transform: translateX(0);
-    }
-    50% {
-        background-color: #abd5db;
-    }
-    100% {
-        background-color: transparent;
-        transform: translateX(0);
-    }
+/* Function headers */
+.function-header {
+    background: #f6f8fa;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e1e4e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.function-name {
+    font-weight: bold;
+    color: #24292e;
+}
+
+.function-type {
+    background: #0366d6;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.function-type.primitive {
+    background: #28a745;
+}
+
+.function-type.curve {
+    background: #6f42c1;
+}
+
+.function-type.circle {
+    background: #fd7e14;
+}
+
+/* Function code areas */
+.function-code-area {
+    position: relative;
+    width: 100%;
+    min-height: 60px;
+    padding: 12px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: transparent;
+    caret-color: #333;
+    resize: vertical;
+    z-index: 2;
+    overflow-y: auto;
+}
+
+/* Function syntax overlays */
+.function-syntax-overlay {
+    position: absolute;
+    top: 41px; /* Account for header height */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 12px;
+    pointer-events: none;
+    font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    z-index: 1;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 /* Enhanced editor syntax highlighting */
@@ -129,6 +184,28 @@
 .editor-comment {
     color: #6a737d;
     font-style: italic;
+}
+
+/* Code execution feedback */
+.code-function-block.code-executed {
+    animation: functionExecuteHighlight 2s ease forwards;
+}
+
+@keyframes functionExecuteHighlight {
+    0% {
+        background-color: rgba(209, 236, 241, 0.5);
+        border-color: #17a2b8;
+    }
+    25% {
+        background-color: rgba(190, 229, 235, 0.5);
+    }
+    50% {
+        background-color: rgba(171, 213, 219, 0.5);
+    }
+    100% {
+        background-color: transparent;
+        border-color: #e1e4e8;
+    }
 }
 
 /* Viewer controls */
@@ -201,6 +278,10 @@
 @media (max-width: 768px) {
     .code-editor {
         height: 300px;
+    }
+    
+    .function-code-area,
+    .function-syntax-overlay {
         font-size: 12px;
     }
     
@@ -215,5 +296,10 @@
     .viewer-controls .button {
         font-size: 11px;
         padding: 4px 8px;
+    }
+    
+    .function-header {
+        padding: 6px 8px;
+        font-size: 11px;
     }
 } 

@@ -10,6 +10,7 @@ class ShapeEditor {
         this.isInitialized = false;
         this.originalMaterials = new Map();
         this.wireframeMaterials = new Map();
+        this.currentHighlightedFunction = null;
         
         // Default code for editing
         this.defaultCode = `# armchair mesh generation
@@ -94,20 +95,154 @@ create_curve(name='leg_6', control_points=[
     }
     
     renderCodeInEditor() {
-        const lines = this.currentCode.split('\n');
-        let html = '';
+        // Parse code into individual functions first
+        this.identifyMeshParts();
         
-        lines.forEach((line, index) => {
-            const lineNumber = index + 1;
-            const highlightedLine = this.applySyntaxHighlighting(line);
-            html += `<div class="code-line" data-line="${lineNumber}" contenteditable="true">${highlightedLine}</div>`;
+        // Create function blocks instead of single textarea
+        let html = '';
+        const lines = this.currentCode.split('\n');
+        
+        // Add comment block at the top if it exists
+        let currentIndex = 0;
+        while (currentIndex < lines.length && lines[currentIndex].trim().startsWith('#')) {
+            if (currentIndex === 0) {
+                html += '<div class="code-comment-block">';
+            }
+            html += `<div class="code-line">${this.applySyntaxHighlightingToLine(lines[currentIndex])}</div>`;
+            currentIndex++;
+        }
+        if (currentIndex > 0) {
+            html += '</div>';
+        }
+        
+        // Create function blocks
+        this.meshParts.forEach((meshPart, index) => {
+            const functionLines = lines.slice(meshPart.startLine, meshPart.endLine + 1);
+            const functionCode = functionLines.join('\n');
+            
+            const functionType = this.getFunctionType(functionLines[0]);
+            html += `
+                <div class="code-function-block" data-mesh-name="${meshPart.name}" data-function-index="${index}">
+                    <div class="function-header">
+                        <span class="function-name">${meshPart.name}</span>
+                        <span class="function-type ${functionType}">${functionType}</span>
+                    </div>
+                    <textarea class="function-code-area" spellcheck="false">${functionCode}</textarea>
+                    <div class="function-syntax-overlay">${this.applySyntaxHighlightingToBlock(functionCode)}</div>
+                </div>
+            `;
         });
         
+        // Add any remaining lines (like final comment)
+        if (currentIndex < lines.length) {
+            const remainingLines = lines.slice(this.meshParts[this.meshParts.length - 1].endLine + 1);
+            if (remainingLines.some(line => line.trim())) {
+                html += '<div class="code-comment-block">';
+                remainingLines.forEach(line => {
+                    html += `<div class="code-line">${this.applySyntaxHighlightingToLine(line)}</div>`;
+                });
+                html += '</div>';
+            }
+        }
+        
         this.codeEditor.innerHTML = html;
-        this.setupCodeLineEvents();
+        this.setupFunctionBlockEvents();
     }
-    
-    applySyntaxHighlighting(line) {
+
+    getFunctionType(firstLine) {
+        if (firstLine.includes('create_primitive')) return 'primitive';
+        if (firstLine.includes('create_curve')) return 'curve';
+        if (firstLine.includes('create_circle')) return 'circle';
+        return 'function';
+    }
+
+    setupFunctionBlockEvents() {
+        const functionBlocks = this.codeEditor.querySelectorAll('.code-function-block');
+        
+        functionBlocks.forEach(block => {
+            const meshName = block.dataset.meshName;
+            const textarea = block.querySelector('.function-code-area');
+            
+            // Hover events for highlighting
+            block.addEventListener('mouseenter', () => {
+                this.highlightMeshPartByName(meshName);
+                this.highlightCodeFunctionBlock(block);
+            });
+            
+            block.addEventListener('mouseleave', () => {
+                this.unhighlightMeshPart();
+            });
+            
+            // Code editing events
+            if (textarea) {
+                textarea.addEventListener('input', () => this.onFunctionCodeChange(block));
+                textarea.addEventListener('scroll', () => this.syncFunctionOverlay(block));
+            }
+        });
+    }
+
+    syncFunctionOverlay(block) {
+        const textarea = block.querySelector('.function-code-area');
+        const overlay = block.querySelector('.function-syntax-overlay');
+        
+        if (textarea && overlay) {
+            overlay.scrollTop = textarea.scrollTop;
+            overlay.scrollLeft = textarea.scrollLeft;
+        }
+    }
+
+    onFunctionCodeChange(block) {
+        const textarea = block.querySelector('.function-code-area');
+        const overlay = block.querySelector('.function-syntax-overlay');
+        
+        if (textarea && overlay) {
+            const functionCode = textarea.value;
+            overlay.innerHTML = this.applySyntaxHighlightingToBlock(functionCode);
+            this.syncFunctionOverlay(block);
+            
+            // Update the mesh part data
+            const meshName = block.dataset.meshName;
+            const meshPart = this.meshParts.find(part => part.name === meshName);
+            if (meshPart) {
+                // Update the overall code
+                this.updateCodeFromFunctionBlocks();
+            }
+        }
+        
+        console.log('Function code changed');
+    }
+
+    updateCodeFromFunctionBlocks() {
+        const functionBlocks = this.codeEditor.querySelectorAll('.code-function-block');
+        const commentBlock = this.codeEditor.querySelector('.code-comment-block');
+        
+        let newCode = '';
+        
+        // Add comment block if exists
+        if (commentBlock) {
+            const commentLines = commentBlock.querySelectorAll('.code-line');
+            commentLines.forEach(line => {
+                newCode += line.textContent + '\n';
+            });
+            newCode += '\n';
+        }
+        
+        // Add function blocks
+        functionBlocks.forEach((block, index) => {
+            const textarea = block.querySelector('.function-code-area');
+            if (textarea) {
+                newCode += textarea.value;
+                if (index < functionBlocks.length - 1) {
+                    newCode += '\n\n';
+                }
+            }
+        });
+        
+        this.currentCode = newCode;
+        this.identifyMeshParts(); // Re-parse after changes
+    }
+
+    applySyntaxHighlightingToLine(line) {
         let highlighted = line;
         
         // Keywords
@@ -115,7 +250,7 @@ create_curve(name='leg_6', control_points=[
             '<span class="editor-function">$1</span>');
         
         // Parameters
-        highlighted = highlighted.replace(/\b(name|primitive_type|location|scale|rotation|control_points|thickness)\b/g, 
+        highlighted = highlighted.replace(/\b(name|primitive_type|location|scale|rotation|control_points|thickness|smoothness)\b/g, 
             '<span class="editor-variable">$1</span>');
         
         // Strings
@@ -125,57 +260,89 @@ create_curve(name='leg_6', control_points=[
         highlighted = highlighted.replace(/\b(\-?\d+\.?\d*)\b/g, '<span class="editor-number">$1</span>');
         
         // Comments
-        highlighted = highlighted.replace(/(#.*$)/g, '<span class="editor-comment">$1</span>');
+        highlighted = highlighted.replace(/(#.*$)/gm, '<span class="editor-comment">$1</span>');
         
         return highlighted;
     }
-    
-    setupCodeLineEvents() {
-        const codeLines = this.codeEditor.querySelectorAll('.code-line');
-        
-        codeLines.forEach((line, index) => {
-            // Enhanced hover highlighting
-            line.addEventListener('mouseenter', () => {
-                this.highlightMeshPart(index);
-                line.classList.add('code-hover');
-            });
-            line.addEventListener('mouseleave', () => {
-                this.unhighlightMeshPart();
-                line.classList.remove('code-hover');
-            });
-            
-            // Click focusing with better visual feedback
-            line.addEventListener('click', () => {
-                this.focusMeshPart(index);
-                this.highlightMeshPart(index);
-            });
-            
-            // Content editing
-            line.addEventListener('input', () => this.onCodeChange());
-            line.addEventListener('keydown', (e) => this.handleKeyDown(e, line));
-        });
+
+    applySyntaxHighlightingToBlock(code) {
+        return code.split('\n').map(line => this.applySyntaxHighlightingToLine(line)).join('<br>');
     }
-    
-    handleKeyDown(e, line) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            // Create new line
-            const newLine = document.createElement('div');
-            newLine.className = 'code-line';
-            newLine.contentEditable = true;
-            newLine.innerHTML = '';
-            
-            line.parentNode.insertBefore(newLine, line.nextSibling);
-            newLine.focus();
-            this.setupCodeLineEvents();
+
+    highlightCodeFunctionBlock(block) {
+        // Remove previous highlights
+        this.unhighlightCodeFunction();
+        
+        // Add highlight to specific function block
+        if (block) {
+            block.classList.add('function-highlighted');
+            this.currentHighlightedBlock = block;
         }
+    }
+
+    unhighlightCodeFunction() {
+        // Remove all function highlights
+        const highlightedBlocks = this.codeEditor.querySelectorAll('.function-highlighted');
+        highlightedBlocks.forEach(block => block.classList.remove('function-highlighted'));
+        this.currentHighlightedBlock = null;
+    }
+
+    highlightMeshPartByName(meshName) {
+        // Find and highlight the corresponding function block
+        const functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
+        if (functionBlock) {
+            this.highlightCodeFunctionBlock(functionBlock);
+            this.highlightMeshObject(meshName);
+            console.log(`Highlighting mesh: ${meshName}`);
+        } else {
+            console.log(`Function block not found for mesh: ${meshName}`);
+        }
+    }
+
+    handleCodeHover(event) {
+        // This method is no longer needed with function blocks
+        // Individual function blocks handle their own hover events
+    }
+
+    getFunctionAtPosition(position) {
+        // This method is no longer needed with function blocks
+        return null;
+    }
+
+    applySyntaxHighlighting() {
+        // This method is now handled by individual function blocks
+        // No longer needed for the overall editor
+    }
+
+    syncOverlayScroll() {
+        // This method is now handled by individual function blocks
+        // No longer needed for the overall editor
+    }
+
+    onCodeChange() {
+        // This is now handled by individual function changes
+        console.log('Code changed, auto-save enabled');
+    }
+
+    focusMeshPart(meshName) {
+        const functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
+        if (functionBlock) {
+            // Temporarily highlight the function block
+            this.highlightCodeFunctionBlock(functionBlock);
+            functionBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            setTimeout(() => {
+                this.unhighlightCodeFunction();
+            }, 2000);
+        }
+        
+        console.log(`Focusing on mesh part: ${meshName}`);
     }
     
     setupMeshViewer() {
         if (this.meshViewer) {
             this.meshViewer.addEventListener('load', () => {
                 console.log('3D model loaded successfully');
-                this.identifyMeshParts();
                 this.indexMeshObjects();
                 this.setupMeshHoverInteractions();
             });
@@ -240,31 +407,27 @@ create_curve(name='leg_6', control_points=[
         // Highlight the mesh object
         this.highlightMeshObject(meshName);
         
-        // Find and highlight corresponding code line
-        const meshPart = this.meshParts.find(part => part.name === meshName);
-        if (meshPart) {
-            const lines = this.codeEditor.querySelectorAll('.code-line');
-            if (lines[meshPart.lineIndex]) {
-                lines[meshPart.lineIndex].classList.add('mesh-highlighted');
-            }
-        }
+        // Find and highlight corresponding code function
+        this.highlightMeshPartByName(meshName);
     }
 
     unhighlightAllMeshParts() {
         // Remove code highlights
-        const highlightedLines = this.codeEditor.querySelectorAll('.mesh-highlighted');
-        highlightedLines.forEach(line => line.classList.remove('mesh-highlighted'));
+        this.unhighlightCodeFunction();
         
         // Restore original mesh materials
         if (this.currentHighlightedMesh && this.meshObjects && this.originalMaterials) {
             const meshObject = this.meshObjects[this.currentHighlightedMesh];
-            const originalMaterial = this.originalMaterials.get(meshObject.uuid);
             
-            if (meshObject && originalMaterial) {
-                meshObject.material = originalMaterial;
+            if (meshObject && meshObject.uuid) {
+                const originalMaterial = this.originalMaterials.get(meshObject.uuid);
+                if (originalMaterial) {
+                    meshObject.material = originalMaterial;
+                }
             }
         }
         this.currentHighlightedMesh = null;
+        this.currentHoveredMesh = null;
     }
 
     indexMeshObjects() {
@@ -275,7 +438,7 @@ create_curve(name='leg_6', control_points=[
                 const scene = this.meshViewer.model;
                 this.meshObjects = {};
                 
-                if (scene) {
+                if (scene && typeof scene.traverse === 'function') {
                     scene.traverse((child) => {
                         if (child.isMesh && child.name) {
                             this.meshObjects[child.name] = child;
@@ -286,12 +449,30 @@ create_curve(name='leg_6', control_points=[
                     });
                     console.log('Mesh objects indexed:', Object.keys(this.meshObjects));
                 } else {
-                    console.warn('Could not access model scene');
+                    console.warn('Model scene not available or not a Three.js scene, using fallback mode');
+                    // Fallback: create mock mesh objects based on identified parts
+                    this.meshObjects = {};
+                    this.meshParts.forEach(part => {
+                        this.meshObjects[part.name] = {
+                            name: part.name,
+                            position: { x: 0, y: 0, z: 0 },
+                            material: null, // Use null for mock objects to avoid material operations
+                            uuid: `mock-${part.name}`
+                        };
+                    });
                 }
             } catch (error) {
                 console.warn('Error indexing mesh objects:', error);
                 // Fallback to simulation mode
                 this.meshObjects = {};
+                this.meshParts.forEach(part => {
+                    this.meshObjects[part.name] = {
+                        name: part.name,
+                        position: { x: 0, y: 0, z: 0 },
+                        material: null, // Use null for mock objects to avoid material operations
+                        uuid: `mock-${part.name}`
+                    };
+                });
             }
         }, 1000);
     }
@@ -320,39 +501,63 @@ create_curve(name='leg_6', control_points=[
     }
     
     identifyMeshParts() {
-        // Simulate mesh part identification
-        this.meshParts = [
-            { name: 'back_sofa_board_8', lineIndex: 1 },
-            { name: 'sofa_board_9', lineIndex: 2 },
-            { name: 'cushion_11', lineIndex: 3 },
-            { name: 'arm_7', lineIndex: 4 },
-            { name: 'arm_10', lineIndex: 5 },
-            { name: 'leg_1', lineIndex: 6 },
-            { name: 'leg_2', lineIndex: 7 },
-            { name: 'leg_3', lineIndex: 8 },
-            { name: 'leg_4', lineIndex: 9 },
-            { name: 'leg_5', lineIndex: 10 },
-            { name: 'leg_6', lineIndex: 11 }
-        ];
-    }
-    
-    highlightMeshPart(lineIndex) {
-        // Remove existing highlights
-        this.unhighlightMeshPart();
+        // Parse the code to identify function ranges instead of single lines
+        const lines = this.currentCode.split('\n');
+        this.meshParts = [];
+        let currentPos = 0;
         
-        // Add highlight to current line
-        const lines = this.codeEditor.querySelectorAll('.code-line');
-        if (lines[lineIndex]) {
-            lines[lineIndex].classList.add('mesh-highlighted');
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            // Check if this line starts a function call
+            if (line.includes('create_primitive') || line.includes('create_curve')) {
+                const nameMatch = line.match(/name=['"]([^'"]+)['"]/);
+                if (nameMatch) {
+                    const functionName = nameMatch[1];
+                    
+                    // Find the end of this function call (look for the closing parenthesis)
+                    let endLine = i;
+                    let openParens = (line.match(/\(/g) || []).length;
+                    let closeParens = (line.match(/\)/g) || []).length;
+                    
+                    while (openParens > closeParens && endLine < lines.length - 1) {
+                        endLine++;
+                        const nextLine = lines[endLine];
+                        openParens += (nextLine.match(/\(/g) || []).length;
+                        closeParens += (nextLine.match(/\)/g) || []).length;
+                    }
+                    
+                    // Calculate character positions
+                    const startPos = currentPos + lines.slice(0, i).join('\n').length + (i > 0 ? 1 : 0);
+                    const endPos = currentPos + lines.slice(0, endLine + 1).join('\n').length;
+                    
+                    this.meshParts.push({
+                        name: functionName,
+                        startLine: i,
+                        endLine: endLine,
+                        startPos: startPos,
+                        endPos: endPos
+                    });
+                }
+            }
         }
         
-        // Find the mesh part for this line
-        const meshPart = this.meshParts.find(part => part.lineIndex === lineIndex);
-        if (meshPart && this.meshObjects && this.meshObjects[meshPart.name]) {
-            this.highlightMeshObject(meshPart.name);
-            console.log(`Highlighting mesh: ${meshPart.name} at line ${lineIndex + 1}`);
+        console.log('Identified mesh parts:', this.meshParts);
+    }
+    
+    highlightMeshPart(startLine, endLine) {
+        console.log(`Highlighting function from line ${startLine + 1} to ${endLine + 1}`);
+        // This will be handled by CSS styling of the function-highlighted class
+    }
+
+    highlightMeshPartByName(meshName) {
+        const meshPart = this.meshParts.find(part => part.name === meshName);
+        if (meshPart) {
+            this.highlightMeshPart(meshPart.startLine, meshPart.endLine);
+            this.highlightMeshObject(meshName);
+            console.log(`Highlighting mesh: ${meshName} (lines ${meshPart.startLine + 1}-${meshPart.endLine + 1})`);
         } else {
-            console.log(`Highlighting line ${lineIndex + 1} (mesh not found)`);
+            console.log(`Mesh part not found: ${meshName}`);
         }
     }
 
@@ -362,42 +567,62 @@ create_curve(name='leg_6', control_points=[
             // Store current highlighted mesh for cleanup
             this.currentHighlightedMesh = meshName;
             
-            // Create highlight material
-            const highlightMaterial = meshObject.material.clone();
-            highlightMaterial.emissive.setHex(0x444444); // Add blue glow
-            highlightMaterial.color.multiplyScalar(1.2); // Brighten the color
-            
-            // Apply highlight
-            meshObject.material = highlightMaterial;
+            // Check if this is a real Three.js mesh or a mock object
+            if (meshObject.material && typeof meshObject.material.clone === 'function') {
+                try {
+                    // Create highlight material for real Three.js mesh
+                    const highlightMaterial = meshObject.material.clone();
+                    
+                    // Safely set emissive if it exists
+                    if (highlightMaterial.emissive && typeof highlightMaterial.emissive.setHex === 'function') {
+                        highlightMaterial.emissive.setHex(0x444444);
+                    }
+                    
+                    // Safely set color if it exists
+                    if (highlightMaterial.color && typeof highlightMaterial.color.multiplyScalar === 'function') {
+                        highlightMaterial.color.multiplyScalar(1.2);
+                    }
+                    
+                    // Apply highlight
+                    meshObject.material = highlightMaterial;
+                } catch (error) {
+                    console.warn(`Could not highlight mesh material for ${meshName}:`, error);
+                }
+            } else {
+                // For mock objects, just log the highlight action
+                console.log(`Highlighting mock mesh: ${meshName}`);
+            }
         }
     }
     
     unhighlightMeshPart() {
-        const highlightedLines = this.codeEditor.querySelectorAll('.mesh-highlighted');
-        highlightedLines.forEach(line => line.classList.remove('mesh-highlighted'));
+        this.unhighlightCodeFunction();
         
         // Restore original mesh material
         if (this.currentHighlightedMesh && this.meshObjects && this.originalMaterials) {
             const meshObject = this.meshObjects[this.currentHighlightedMesh];
-            const originalMaterial = this.originalMaterials.get(meshObject.uuid);
             
-            if (meshObject && originalMaterial) {
-                meshObject.material = originalMaterial;
+            if (meshObject && meshObject.uuid) {
+                const originalMaterial = this.originalMaterials.get(meshObject.uuid);
+                if (originalMaterial) {
+                    meshObject.material = originalMaterial;
+                }
             }
             this.currentHighlightedMesh = null;
         }
     }
     
-    focusMeshPart(lineIndex) {
-        const lines = this.codeEditor.querySelectorAll('.code-line');
-        if (lines[lineIndex]) {
-            lines[lineIndex].classList.add('highlighted');
+    focusMeshPart(meshName) {
+        const meshPart = this.meshParts.find(part => part.name === meshName);
+        if (meshPart) {
+            // Temporarily highlight the function
+            this.highlightCodeFunction(meshPart);
             setTimeout(() => {
-                lines[lineIndex].classList.remove('highlighted');
+                this.unhighlightCodeFunction();
             }, 2000);
         }
         
-        console.log(`Focusing on mesh part at line ${lineIndex + 1}`);
+        console.log(`Focusing on mesh part: ${meshName}`);
     }
     
     onMeshClick(event) {
@@ -417,22 +642,20 @@ create_curve(name='leg_6', control_points=[
                 let clickedMeshName = this.findNearestMesh(hit.position);
                 
                 if (clickedMeshName) {
-                    // Find the corresponding code line
-                    const meshPart = this.meshParts.find(part => part.name === clickedMeshName);
-                    if (meshPart) {
-                        this.focusMeshPart(meshPart.lineIndex);
-                        console.log(`Clicked mesh: ${clickedMeshName}, highlighting line ${meshPart.lineIndex + 1}`);
-                        return;
-                    }
+                    this.focusMeshPart(clickedMeshName);
+                    console.log(`Clicked mesh: ${clickedMeshName}`);
+                    return;
                 }
             }
         } catch (error) {
             console.warn('Could not detect clicked mesh part:', error);
         }
         
-        // Fallback: highlight a relevant line based on mesh parts
-        const randomIndex = Math.floor(Math.random() * this.meshParts.length);
-        this.focusMeshPart(this.meshParts[randomIndex].lineIndex);
+        // Fallback: highlight a relevant function
+        if (this.meshParts.length > 0) {
+            const randomIndex = Math.floor(Math.random() * this.meshParts.length);
+            this.focusMeshPart(this.meshParts[randomIndex].name);
+        }
     }
 
     findNearestMesh(clickPosition) {
@@ -459,22 +682,11 @@ create_curve(name='leg_6', control_points=[
         return nearestMesh;
     }
     
-    onCodeChange() {
-        // Update current code from editor
-        const lines = this.codeEditor.querySelectorAll('.code-line');
-        const codeLines = Array.from(lines).map(line => line.textContent);
-        this.currentCode = codeLines.join('\n');
-        
-        console.log('Code changed, auto-save enabled');
-    }
-    
     executeCode() {
         console.log('Executing updated code...');
         
-        // Get current code from editor
-        const lines = this.codeEditor.querySelectorAll('.code-line');
-        const codeLines = Array.from(lines).map(line => line.textContent);
-        this.currentCode = codeLines.join('\n');
+        // Update current code from all function blocks
+        this.updateCodeFromFunctionBlocks();
         
         // Show execution feedback
         this.showExecutionFeedback();
@@ -539,16 +751,16 @@ create_curve(name='leg_6', control_points=[
     applyMeshChanges(changes) {
         console.log('Applying mesh changes:', changes);
         
-        // Visual feedback for changes
-        changes.forEach(change => {
-            const lines = this.codeEditor.querySelectorAll('.code-line');
-            if (lines[change.lineIndex]) {
-                lines[change.lineIndex].classList.add('code-executed');
+        // Visual feedback for changes - highlight affected function blocks briefly
+        if (changes.length > 0) {
+            const functionBlocks = this.codeEditor.querySelectorAll('.code-function-block');
+            functionBlocks.forEach(block => {
+                block.classList.add('code-executed');
                 setTimeout(() => {
-                    lines[change.lineIndex].classList.remove('code-executed');
+                    block.classList.remove('code-executed');
                 }, 2000);
-            }
-        });
+            });
+        }
         
         // Simulate mesh transformation
         this.simulateAdvancedMeshUpdate(changes);
@@ -686,7 +898,10 @@ create_curve(name='leg_6', control_points=[
     applyWireframeToScene(enableWireframe) {
         try {
             const scene = this.meshViewer.model;
-            if (!scene) return;
+            if (!scene || typeof scene.traverse !== 'function') {
+                console.warn('Scene not available for wireframe toggle');
+                return;
+            }
             
             // Store wireframe materials if not already created
             if (!this.wireframeMaterials) {

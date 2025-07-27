@@ -5,7 +5,7 @@ class ShapeUnderstanding {
         this.codeDisplay = null;
         this.isWrapMode = false;
         this.isProcessing = false;
-        this.armchairCode = `# armchair mesh generation
+        this.sofaCode = `# sofa mesh generation
 create_primitive(name='back_sofa_board_8', primitive_type='cube', 
                 location=[0, -0.101, -0.39], 
                 scale=[0.32, 0.1, 0.31])
@@ -72,7 +72,7 @@ create_curve(name='leg_6', control_points=[
     renderCode() {
         if (!this.codeDisplay) return;
 
-        const lines = this.armchairCode.split('\n');
+        const lines = this.sofaCode.split('\n');
         let html = '';
         
         lines.forEach((line, index) => {
@@ -88,7 +88,7 @@ create_curve(name='leg_6', control_points=[
     }
 
     applySyntaxHighlighting(line) {
-        // Basic syntax highlighting for the armchair code
+        // Basic syntax highlighting for the sofa code
         let highlighted = line;
         
         // Comments

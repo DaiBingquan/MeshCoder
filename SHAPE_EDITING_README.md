@@ -42,7 +42,7 @@ The Shape Editing section provides an interactive interface for editing 3D mesh 
 ### Step 1: Prepare Your Model
 1. Export your 3D model as `.glb` or `.gltf` format
 2. Place the file in `assets/models/` directory
-3. Name it `armchair.glb` (or update the src in `index.html`)
+3. Name it `sofa.glb` (or update the src in `index.html`)
 
 ### Step 2: Update Model Reference
 In `index.html`, change the model-viewer src:
@@ -115,7 +115,7 @@ To connect with actual mesh generation:
 
 ## Next Steps
 
-1. **Add your 3D model**: Replace placeholder with actual armchair model
+1. **Add your 3D model**: Replace placeholder with actual sofa model
 2. **Implement real synchronization**: Connect code changes to mesh updates
 3. **Enhance code parsing**: Add support for more complex mesh operations
 4. **Add more mesh types**: Support cylinders, spheres, custom shapes

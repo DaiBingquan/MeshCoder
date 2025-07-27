@@ -10,7 +10,7 @@ from bpy_lib import *
 
 delete_all()
 
-# object name: armchair
+# object name: sofa
 # part_1: leg
 create_circle(name='circle_1', radius=0.01, center='MEDIAN')
 create_curve(name='leg_1', profile_name='circle_1', control_points=[[-0.39, -0.4, -0.31], [-0.39, -0.48, -0.31]], points_radius=[1.0, 0.4], handle_type=[1, 1, 1, 1], thickness=0.0, fill_caps='both')

@@ -14,7 +14,7 @@ class ShapeEditor {
         this.currentHighlightedFunction = null;
         
         // Default code for editing
-        this.defaultCode = `# armchair mesh generation
+        this.defaultCode = `# sofa mesh generation
 create_primitive(name='back_sofa_board_8', primitive_type='cube', 
                 location=[0, -0.101, -0.39], 
                 scale=[0.32, 0.1, 0.31])
@@ -394,7 +394,7 @@ create_curve(name='leg_6', control_points=[
             };
             
             // Load the model
-            this.threeViewer.loadModel('assets/models/armchair.glb');
+            this.threeViewer.loadModel('assets/models/sofa.glb');
         }
     }
 

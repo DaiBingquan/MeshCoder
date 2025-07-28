@@ -19,13 +19,7 @@
     background: #ffffff;
 }
 
-.editor-toolbar {
-    background: #f8f9fa;
-    padding: 8px 12px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    gap: 8px;
-}
+/* Editor toolbar styles removed as execute/reset buttons are no longer needed */
 
 .code-editor {
     background: #ffffff;
@@ -186,27 +180,7 @@
     font-style: italic;
 }
 
-/* Code execution feedback */
-.code-function-block.code-executed {
-    animation: functionExecuteHighlight 2s ease forwards;
-}
-
-@keyframes functionExecuteHighlight {
-    0% {
-        background-color: rgba(209, 236, 241, 0.5);
-        border-color: #17a2b8;
-    }
-    25% {
-        background-color: rgba(190, 229, 235, 0.5);
-    }
-    50% {
-        background-color: rgba(171, 213, 219, 0.5);
-    }
-    100% {
-        background-color: transparent;
-        border-color: #e1e4e8;
-    }
-}
+/* Code execution feedback styles removed as execute functionality is no longer needed */
 
 /* Viewer controls */
 .viewer-controls {
@@ -289,9 +263,7 @@
         height: 300px;
     }
     
-    .editor-toolbar {
-        padding: 6px 8px;
-    }
+    /* Editor toolbar responsive styles removed */
     
     .viewer-controls .button {
         font-size: 11px;

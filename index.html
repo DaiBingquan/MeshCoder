@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="static/css/code.css">
   <link rel="stylesheet" href="static/css/editing.css">
   <link rel="stylesheet" href="static/css/understanding.css">
-  <link rel="icon" href="assets/imgs/pjlab.png">
+  <link rel="icon" href="assets/imgs/pjlab.jpg">
 
   <script defer src="static/js/fontawesome.all.min.js"></script>
   <script src="static/js/index.js"></script>
@@ -79,7 +79,7 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand navbar-brand-centered">
     <a class="navbar-item" href="https://www.shlab.org.cn/" target="_blank">
-      <img src="assets/imgs/pjlab.png" alt="Shanghai AI Lab" style="height: 40px;">
+      <img src="assets/imgs/pjlab.jpg" alt="Shanghai AI Lab" style="height: 40px;">
     </a>
   </div>
 </nav>
@@ -292,197 +292,151 @@
   </div>
 </section>
 
-<section class="section" id="shape-editing">
+<!-- Combined Shape Editing and Understanding Section -->
+<section class="section" id="shape-demo">
   <div class="container is-max-desktop">
-        <h2 class="title is-3">Shape Editing</h2>
-        <p>Unlike traditional mesh editing in softwares, now we can modify the MeshLLM-generated code to partially edit the shape as we want.</p>
-    
-    <div class="columns is-variable is-6" style="margin-top: 2rem;">
-      <!-- Left Panel: 3D Mesh Viewer -->
+    <div class="columns is-variable is-6">
+      
+      <!-- Left Side: Shape Editing -->
       <div class="column is-half">
-        <div class="mesh-viewer-container">
-          <h4 class="title is-5 has-text-centered">3D Mesh</h4>
-          <div class="model-viewer-wrapper">
-            <div id="meshViewer" style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; position: relative;">
-              <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
-                <i class="fas fa-cube fa-3x" style="margin-bottom: 1rem;"></i>
-                <p>Loading 3D Model...</p>
+        <div class="shape-editing-container">
+          <!-- Title and Description -->
+          <h2 class="title is-3">Shape Editing</h2>
+          <p class="mb-4">Unlike traditional mesh editing in softwares, now we can modify the MeshLLM-generated code to partially edit the shape as we want.</p>
+          
+          <!-- Editing Image -->
+          <div class="editing-image-container mb-4">
+            <img src="assets/imgs/editing.jpg" alt="Shape Editing Process" style="width:100%; height:auto; border-radius:8px; border:1px solid #ddd;" />
+          </div>
+          
+          <!-- 3D Mesh Viewer -->
+          <div class="mesh-viewer-container mb-4">
+            <h4 class="title is-5 has-text-centered">3D Mesh</h4>
+            <div class="model-viewer-wrapper">
+              <div id="meshViewer" style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; position: relative;">
+                <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
+                  <i class="fas fa-cube fa-3x" style="margin-bottom: 1rem;"></i>
+                  <p>Loading 3D Model...</p>
+                </div>
               </div>
             </div>
+            <div class="viewer-controls" style="margin-top: 1rem; text-align: center;">
+              <button class="button is-small is-primary" id="resetViewBtn">Reset View</button>
+              <button class="button is-small is-info" id="wireframeBtn">Toggle Wireframe</button>
+            </div>
           </div>
-          <div class="viewer-controls" style="margin-top: 1rem; text-align: center;">
-            <button class="button is-small is-primary" id="resetViewBtn">Reset View</button>
-            <button class="button is-small is-info" id="wireframeBtn">Toggle Wireframe</button>
+          
+          <!-- Editable Code -->
+          <div class="code-editor-container">
+            <h4 class="title is-5 has-text-centered">Editable Code</h4>
+            <div class="code-editor-wrapper">
+              <div id="codeEditor" class="code-editor"></div>
+            </div>
           </div>
         </div>
       </div>
       
-      <!-- Right Panel: Code Editor -->
+      <!-- Right Side: Shape Understanding -->
       <div class="column is-half">
-        <div class="code-editor-container">
-          <h4 class="title is-5 has-text-centered">Editable Code</h4>
-          <div class="code-editor-wrapper">
-            <div class="editor-toolbar">
-              <button class="button is-small is-success" id="executeCodeBtn">
-                <span class="icon"><i class="fas fa-play"></i></span>
-                <span>Execute</span>
+        <div class="shape-understanding-container">
+          <!-- Title and Description -->
+          <h2 class="title is-3">Shape Understanding</h2>
+          <p class="mb-4">We can also use the generated code to help LLMs better understand the shape.</p>
+          
+          <!-- Understanding Image -->
+          <div class="understanding-image-container mb-4">
+            <img src="assets/imgs/understanding.jpg" alt="Shape Understanding Process" style="width:100%; height:auto; border-radius:8px; border:1px solid #ddd;" />
+          </div>
+          
+          <!-- Generated Sofa Code -->
+          <div class="understanding-code-container mb-4">
+            <h4 class="title is-5 has-text-centered">Generated Sofa Code</h4>
+            <div class="understanding-code-wrapper">
+              <button class="wrap-toggle-btn" id="understandingWrapToggleBtn" title="Toggle code wrapping">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M3 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M3 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M15 12L18 15L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </button>
-              <button class="button is-small is-warning" id="resetCodeBtn">
-                <span class="icon"><i class="fas fa-undo"></i></span>
-                <span>Reset</span>
-              </button>
+              <div class="understanding-code-display" id="understandingCodeDisplay">
+                <!-- Sofa code will be rendered here -->
+              </div>
             </div>
-            <div id="codeEditor" class="code-editor"></div>
+          </div>
+          
+          <!-- LLM Models -->
+          <div class="llm-processing-container mb-4">
+            <div class="llm-processing-indicator has-text-centered">
+              <div class="processing-icon" id="processingIcon">
+                <i class="fas fa-brain fa-3x" style="color: #569cd6; margin-bottom: 1rem;"></i>
+              </div>
+              <h5 class="title is-6">LLM Models</h5>
+              <p class="is-size-7 has-text-grey">Generated code could help LLMs understand the shape</p>
+              <div class="processing-dots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Q&A Section -->
+          <div class="understanding-qa-container">
+            <h4 class="title is-5 has-text-centered">Shape Analysis</h4>
+            <div class="qa-wrapper">
+              <div class="question-set" id="questionSet">
+                <div class="qa-item" data-question="legs">
+                  <div class="question">
+                    <span class="question-icon">Q:</span>
+                    <span class="question-text">How many legs does this sofa have?</span>
+                    <button class="ask-button" data-target="legs">Ask</button>
+                  </div>
+                  <div class="answer" id="answer-legs" style="display: none;">
+                    <div class="answer-content">
+                      <span class="answer-icon">🤖</span>
+                      <span class="answer-text">This sofa has 6 legs (leg_1 through leg_6) created using curve primitives with very thin thickness (0.01). They are positioned at different points around the chair for optimal stability.</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="qa-item" data-question="arms">
+                  <div class="question">
+                    <span class="question-icon">Q:</span>
+                    <span class="question-text">How are the armrests constructed?</span>
+                    <button class="ask-button" data-target="arms">Ask</button>
+                  </div>
+                  <div class="answer" id="answer-arms" style="display: none;">
+                    <div class="answer-content">
+                      <span class="answer-icon">🤖</span>
+                      <span class="answer-text">The armrests (arm_7 and arm_10) are created using curved primitives with control points defining smooth flowing lines from top to bottom, with 0.75 smoothness for elegant curves.</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="qa-item" data-question="components">
+                  <div class="question">
+                    <span class="question-icon">Q:</span>
+                    <span class="question-text">What is the structure of this object?</span>
+                    <button class="ask-button" data-target="components">Ask</button>
+                  </div>
+                  <div class="answer" id="answer-components" style="display: none;">
+                    <div class="answer-content">
+                      <span class="answer-icon">🤖</span>
+                      <span class="answer-text">This sofa consists of 11 mesh components: back_sofa_board_8 (backrest), sofa_board_9 (base seat), cushion_11 and cushion_12 (padding elements), arm_7 and arm_10 (curved armrests), and leg_1 through leg_6 (support legs).</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      
     </div>
-    
-    <!-- Tips Section -->
-    <!-- <div class="columns is-centered" style="margin-top: 2rem;">
-      <div class="column is-four-fifths">
-        <div class="notification is-info is-light">
-          <p><strong>💡 Interactive Features:</strong></p>
-          <ul>
-            <li><strong>Mesh → Code:</strong> Hover over 3D mesh parts to highlight corresponding code sections</li>
-            <li><strong>Code → Mesh:</strong> Hover over code lines to highlight related mesh components</li>
-            <li><strong>Live Editing:</strong> Edit parameters like <code>'cube'</code> → <code>'cylinder'</code> and click Execute</li>
-            <li><strong>Parameter Changes:</strong> Modify <code>scale</code>, <code>location</code>, or <code>primitive_type</code> values</li>
-            <li><strong>Visual Feedback:</strong> Watch camera movements simulate your code changes</li>
-            <li><strong>Real-time Parsing:</strong> The system detects and responds to specific code modifications</li>
-          </ul>
-        </div>
-      </div>
-    </div> -->
   </div>
 </section>
-
-
-<section class="section" id="shape-understanding">
-  <div class="container is-max-desktop">
-      <h2 class="title is-3">Shape Understanding</h2>
-      <p>We can also use the generated code to help LLMs better understand the shape.</p>
-  
-  <div class="columns is-variable is-6" style="margin-top: 2rem; position: relative;">
-    <!-- Left Panel: Generated Code Display -->
-    <div class="column is-5">
-      <div class="understanding-code-container">
-                 <h4 class="title is-5 has-text-centered">Generated Sofa Code</h4>
-        <div class="understanding-code-wrapper">
-          <button class="wrap-toggle-btn" id="understandingWrapToggleBtn" title="Toggle code wrapping">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M3 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M3 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M15 12L18 15L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <div class="understanding-code-display" id="understandingCodeDisplay">
-            <!-- Sofa code will be rendered here -->
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Arrow from Mesh to LLM -->
-    <div class="flow-arrow arrow-mesh-to-llm">
-      <div class="arrow-line"></div>
-      <div class="arrow-head"></div>
-    </div>
-    
-    <!-- Middle Panel: LLM Processing -->
-    <div class="column is-2 has-text-centered">
-      <div class="llm-processing-indicator">
-        <div style="margin-top: 8rem;">
-          <div class="processing-icon" id="processingIcon">
-            <i class="fas fa-brain fa-3x" style="color: #569cd6; margin-bottom: 1rem;"></i>
-          </div>
-          <h5 class="title is-6">LLM Models</h5>
-          <p class="is-size-7 has-text-grey">Generated code could help LLMs understand the shape</p>
-          <div class="processing-dots">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Arrow from LLM to Q&A -->
-    <div class="flow-arrow arrow-llm-to-qa">
-      <div class="arrow-line"></div>
-      <div class="arrow-head"></div>
-    </div>
-    
-    <!-- Right Panel: Questions and Answers -->
-    <div class="column is-5">
-      <div class="understanding-qa-container">
-        <h4 class="title is-5 has-text-centered">Shape Analysis</h4>
-        <div class="qa-wrapper">
-                    <div class="question-set" id="questionSet">
-            <div class="qa-item" data-question="legs">
-              <div class="question">
-                <span class="question-icon">Q:</span>
-                <span class="question-text">How many legs does this sofa have?</span>
-                <button class="ask-button" data-target="legs">Ask</button>
-              </div>
-              <div class="answer" id="answer-legs" style="display: none;">
-                <div class="answer-content">
-                  <span class="answer-icon">🤖</span>
-                  <span class="answer-text">This sofa has 6 legs (leg_1 through leg_6) created using curve primitives with very thin thickness (0.01). They are positioned at different points around the chair for optimal stability.</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="qa-item" data-question="arms">
-              <div class="question">
-                <span class="question-icon">Q:</span>
-                <span class="question-text">How are the armrests constructed?</span>
-                <button class="ask-button" data-target="arms">Ask</button>
-              </div>
-              <div class="answer" id="answer-arms" style="display: none;">
-                <div class="answer-content">
-                  <span class="answer-icon">🤖</span>
-                  <span class="answer-text">The armrests (arm_7 and arm_10) are created using curved primitives with control points defining smooth flowing lines from top to bottom, with 0.75 smoothness for elegant curves.</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="qa-item" data-question="components">
-              <div class="question">
-                <span class="question-icon">Q:</span>
-                <span class="question-text">What is the structure of this object?</span>
-                <button class="ask-button" data-target="components">Ask</button>
-              </div>
-              <div class="answer" id="answer-components" style="display: none;">
-                <div class="answer-content">
-                  <span class="answer-icon">🤖</span>
-                  <span class="answer-text">This sofa consists of 11 mesh components: back_sofa_board_8 (backrest), sofa_board_9 (base seat), cushion_11 and cushion_12 (padding elements), arm_7 and arm_10 (curved armrests), and leg_1 through leg_6 (support legs).</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-  <!-- Features Section
-  <div class="columns is-centered" style="margin-top: 2rem;">
-    <div class="column is-four-fifths">
-      <div class="notification is-success is-light">
-        <p><strong>🧠 AI Understanding Features:</strong></p>
-        <ul>
-          <li><strong>Geometric Analysis:</strong> Automatic detection of dimensions, shapes, and structural components</li>
-          <li><strong>Semantic Understanding:</strong> Recognition of object parts, materials, and functional elements</li>
-          <li><strong>Interactive Q&A:</strong> Ask questions about shape properties and receive detailed AI responses</li>
-          <li><strong>Visual Correlation:</strong> Click questions to highlight relevant mesh regions</li>
-          <li><strong>Multi-modal Reasoning:</strong> Combines 3D geometry with natural language understanding</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section> -->
 
 
 <section class="section" id="BibTeX">

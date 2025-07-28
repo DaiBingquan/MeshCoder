@@ -327,6 +327,9 @@
           <!-- 3D Mesh Viewer -->
           <div class="mesh-viewer-container mb-4">
             <h4 class="title is-5 has-text-centered">3D Mesh</h4>
+            <div class="tip-label mesh-tip" data-tooltip="Left click and drag to orbit • Middle click/scroll to zoom • Right click to pan • Hover on mesh parts to highlight corresponding code">
+              Tip
+            </div>
             <div class="model-viewer-wrapper">
               <div id="meshViewer" style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; position: relative;">
                 <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
@@ -344,6 +347,9 @@
           <!-- Editable Code -->
           <div class="code-editor-container">
             <h4 class="title is-5 has-text-centered">Editable Code</h4>
+            <div class="tip-label code-tip" data-tooltip="Hover on code blocks to highlight corresponding mesh parts">
+              Tip
+            </div>
             <div class="code-editor-wrapper">
               <div id="codeEditor" class="code-editor"></div>
             </div>

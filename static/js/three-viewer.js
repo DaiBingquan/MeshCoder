@@ -55,7 +55,7 @@ export class ThreeViewer {
         const height = this.container.clientHeight;
         
         this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-        this.camera.position.set(0, 2, 6);
+        this.camera.position.set(0, 3, 10);
         this.camera.lookAt(0, 0, 0);
     }
     
@@ -309,10 +309,13 @@ export class ThreeViewer {
         const fov = this.camera.fov * (Math.PI / 180);
         const distance = maxDim / (2 * Math.tan(fov / 2));
         
+        // Add extra distance multiplier to move camera further back
+        const distanceMultiplier = 2.5;
+        
         this.camera.position.set(
-            center.x + distance * 0.5,
-            center.y + distance * 0.5,
-            center.z + distance
+            center.x + distance * distanceMultiplier * 0.8,
+            center.y + distance * distanceMultiplier * 0.6,
+            center.z + distance * distanceMultiplier
         );
         
         this.controls.target.copy(center);

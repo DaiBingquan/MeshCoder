@@ -15,7 +15,7 @@
 .code-editor-wrapper {
     border: 1px solid #ddd;
     border-radius: 8px;
-    overflow: hidden;
+    /* overflow: hidden; */
     background: #ffffff;
 }
 
@@ -23,7 +23,7 @@
 
 .code-editor {
     background: #ffffff;
-    height: 400px;
+    height: 800px;
     overflow-y: auto;
     overflow-x: hidden;
     font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
@@ -124,7 +124,8 @@
 .function-code-area {
     position: relative;
     width: 100%;
-    min-height: 60px;
+    min-height: 80px;
+    max-height: 200px;
     padding: 12px;
     border: none;
     outline: none;
@@ -251,7 +252,8 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .code-editor {
-        height: 300px;
+        height: 450px;
+        min-height: 450px;
     }
     
     .function-code-area,

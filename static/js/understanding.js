@@ -288,7 +288,7 @@ create_curve(name='leg_6', control_points=[
             processingDots.style.display = 'none';
         }
         if (processingText) {
-            processingText.textContent = 'Generated code could help LLMs understand the shape';
+            processingText.textContent = 'Generated code could help LLMs better understand the shape';
         }
     }
 

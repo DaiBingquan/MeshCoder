@@ -14,16 +14,7 @@ class ShapeEditor {
         this.currentHighlightedFunction = null;
         
         // Default code for editing
-        this.defaultCode = `# sofa mesh generation
-create_primitive(name='back_sofa_board_8', primitive_type='cube', 
-                location=[0, -0.101, -0.39], 
-                scale=[0.32, 0.1, 0.31])
-
-create_primitive(name='sofa_board_9', primitive_type='cube', 
-                location=[0, -0.371, 0.041], 
-                scale=[0.33, 0.05, 0.33])
-
-create_primitive(name='cushion_11', primitive_type='cube', 
+        this.defaultCode = `create_primitive(name='cushion_11', primitive_type='cube', 
                 location=[0, -0.201, -0.08], 
                 scale=[0.42, 0.13, 0.32])
 
@@ -42,6 +33,14 @@ create_curve(name='arm_7', control_points=[
 create_curve(name='arm_10', control_points=[
     [[0.278, 0.218, 0.499], [0.215, -0.421, 0.499]]
 ], smoothness=0.75)
+
+create_primitive(name='back_sofa_board_8', primitive_type='cube', 
+                location=[0, -0.101, -0.39], 
+                scale=[0.32, 0.1, 0.31])
+
+create_primitive(name='sofa_board_9', primitive_type='cube', 
+                location=[0, -0.371, 0.041], 
+                scale=[0.33, 0.05, 0.33])
 
 create_curve(name='leg_1', control_points=[
     [[-0.39, -0.4, -0.31], [-0.39, -0.48, -0.31]]

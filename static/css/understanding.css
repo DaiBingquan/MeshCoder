@@ -315,14 +315,14 @@
 .understanding-qa-container {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 0.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 500px;
+  height: 600px;
   overflow-y: auto;
 }
 
 .qa-wrapper {
-  max-height: 400px;
+  /* max-height: 300px; */
   overflow-y: auto;
 }
 

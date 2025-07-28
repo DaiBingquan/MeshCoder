@@ -27,6 +27,14 @@ create_primitive(name='cushion_11', primitive_type='cube',
                 location=[0, -0.201, -0.08], 
                 scale=[0.42, 0.13, 0.32])
 
+create_curve(name='cushion_12', control_points=[
+    [[-0.34, 0.088, -0.154], [-0.34, 0.165, -0.214], [-0.339, 0.267, -0.212]],
+    [[-0.293, -0.078, -0.097], [-0.292, 0.154, -0.246], [-0.292, 0.428, -0.261]],
+    [[-0.003, -0.136, -0.075], [-0.001, 0.143, -0.289], [0.001, 0.486, -0.284]],
+    [[0.292, -0.078, -0.097], [0.293, 0.154, -0.246], [0.293, 0.428, -0.261]],
+    [[0.339, 0.088, -0.154], [0.339, 0.165, -0.214], [0.34, 0.267, -0.212]]
+], smoothness=0.69)
+
 create_curve(name='arm_7', control_points=[
     [[-0.278, 0.218, 0.499], [-0.215, -0.421, 0.499]]
 ], smoothness=0.75)
@@ -294,13 +302,17 @@ create_curve(name='leg_6', control_points=[
         
         // Try direct match first
         let functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
+        console.log(`Direct match result for "${meshName}":`, functionBlock ? 'found' : 'not found');
         
         // If no direct match, try partial matching for similar names
         if (!functionBlock) {
             // Try finding by partial name matching (removing spaces, underscores)
             const normalizedMeshName = meshName.replace(/[\s_-]/g, '').toLowerCase();
+            console.log(`Normalized mesh name: "${normalizedMeshName}"`);
+            
             const meshPart = this.meshParts.find(part => {
                 const normalizedPartName = part.name.replace(/[\s_-]/g, '').toLowerCase();
+                console.log(`Comparing "${normalizedMeshName}" with "${normalizedPartName}"`);
                 return normalizedPartName.includes(normalizedMeshName) || 
                        normalizedMeshName.includes(normalizedPartName);
             });
@@ -314,7 +326,7 @@ create_curve(name='leg_6', control_points=[
         if (functionBlock) {
             this.highlightCodeFunctionBlock(functionBlock);
             this.highlightMeshObject(meshName);
-            console.log(`Highlighting mesh: ${meshName}`);
+            console.log(`Successfully highlighting mesh: ${meshName}`);
         } else {
             console.log(`Function block not found for mesh: ${meshName}`);
             console.log('Available function blocks:', Array.from(this.codeEditor.querySelectorAll('[data-mesh-name]')).map(b => b.dataset.meshName));
@@ -379,6 +391,10 @@ create_curve(name='leg_6', control_points=[
             };
             
             this.threeViewer.onMeshHover = (meshName, mesh) => {
+                console.log('Mesh hover detected:', meshName);
+                console.log('Available mesh objects in ThreeViewer:', Object.keys(this.threeViewer.meshObjects || {}));
+                console.log('Available mesh parts in code:', this.meshParts.map(p => p.name));
+                
                 if (meshName) {
                     this.highlightMeshPartByName(meshName);
                 } else {
@@ -489,22 +505,6 @@ create_curve(name='leg_6', control_points=[
         console.log('Identified mesh parts:', this.meshParts);
     }
     
-    highlightMeshPart(startLine, endLine) {
-        console.log(`Highlighting function from line ${startLine + 1} to ${endLine + 1}`);
-        // This will be handled by CSS styling of the function-highlighted class
-    }
-
-    highlightMeshPartByName(meshName) {
-        const meshPart = this.meshParts.find(part => part.name === meshName);
-        if (meshPart) {
-            this.highlightMeshPart(meshPart.startLine, meshPart.endLine);
-            this.highlightMeshObject(meshName);
-            console.log(`Highlighting mesh: ${meshName} (lines ${meshPart.startLine + 1}-${meshPart.endLine + 1})`);
-        } else {
-            console.log(`Mesh part not found: ${meshName}`);
-        }
-    }
-
     highlightMeshObject(meshName) {
         if (this.threeViewer) {
             this.threeViewer.highlightMeshByName(meshName);

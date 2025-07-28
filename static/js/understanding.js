@@ -18,6 +18,14 @@ create_primitive(name='cushion_11', primitive_type='cube',
                 location=[0, -0.201, -0.08], 
                 scale=[0.42, 0.13, 0.32])
 
+create_curve(name='cushion_12', control_points=[
+    [[-0.34, 0.088, -0.154], [-0.34, 0.165, -0.214], [-0.339, 0.267, -0.212]],
+    [[-0.293, -0.078, -0.097], [-0.292, 0.154, -0.246], [-0.292, 0.428, -0.261]],
+    [[-0.003, -0.136, -0.075], [-0.001, 0.143, -0.289], [0.001, 0.486, -0.284]],
+    [[0.292, -0.078, -0.097], [0.293, 0.154, -0.246], [0.293, 0.428, -0.261]],
+    [[0.339, 0.088, -0.154], [0.339, 0.165, -0.214], [0.34, 0.267, -0.212]]
+], smoothness=0.69)
+
 create_curve(name='arm_7', control_points=[
     [[-0.278, 0.218, 0.499], [-0.215, -0.421, 0.499]]
 ], smoothness=0.75)
@@ -59,6 +67,15 @@ create_curve(name='leg_6', control_points=[
     init() {
         this.initCodeDisplay();
         this.renderCode();
+        this.initProcessingState();
+    }
+
+    initProcessingState() {
+        // Hide processing dots by default
+        const processingDots = document.querySelector('.processing-dots');
+        if (processingDots) {
+            processingDots.style.display = 'none';
+        }
     }
 
     initCodeDisplay() {
@@ -176,7 +193,7 @@ create_curve(name='leg_6', control_points=[
                 break;
             case 'components':
                 // Highlight main structural components
-                this.highlightLinesContaining(['back_sofa_board_8', 'sofa_board_9', 'cushion_11']);
+                this.highlightLinesContaining(['back_sofa_board_8', 'sofa_board_9', 'cushion_11', 'cushion_12']);
                 break;
             case 'geometry':
                 // Highlight primitive type definitions
@@ -246,9 +263,13 @@ create_curve(name='leg_6', control_points=[
     startProcessingAnimation() {
         const processingIcon = document.getElementById('processingIcon');
         const processingText = document.querySelector('.llm-processing-indicator p');
+        const processingDots = document.querySelector('.processing-dots');
         
         if (processingIcon) {
             processingIcon.style.animation = 'pulse 1s ease-in-out infinite';
+        }
+        if (processingDots) {
+            processingDots.style.display = 'block';
         }
         if (processingText) {
             processingText.textContent = 'Analyzing...';
@@ -258,12 +279,16 @@ create_curve(name='leg_6', control_points=[
     stopProcessingAnimation() {
         const processingIcon = document.getElementById('processingIcon');
         const processingText = document.querySelector('.llm-processing-indicator p');
+        const processingDots = document.querySelector('.processing-dots');
         
         if (processingIcon) {
             processingIcon.style.animation = 'pulse 2s ease-in-out infinite';
         }
+        if (processingDots) {
+            processingDots.style.display = 'none';
+        }
         if (processingText) {
-            processingText.textContent = 'Processing...';
+            processingText.textContent = 'Generated code could help LLMs understand the shape';
         }
     }
 

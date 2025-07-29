@@ -8,6 +8,7 @@ class ShapeEditor {
         this.meshViewer = null;
         this.threeViewer = null;
         this.codeEditor = null;
+        
         this.currentCode = '';
         this.currentModel = 'sofa'; // Default model
         this.meshParts = [];
@@ -70,7 +71,32 @@ create_curve(name='leg_6', control_points=[
 
 `,
 
-            chair: `create_primitive(name='leg_1', primitive_type='cylinder', 
+            chair: `create_curve(name='seat_8', control_points=[
+    [[-0.0, -0.05, -0.23], [-0.24, -0.05, -0.23], [-0.24, -0.05, 0.09]]
+], thickness=0.0669)
+
+create_primitive(name='back_9', primitive_type='cylinder', 
+                location=[-0.21, 0.23, -0.21], 
+                scale=[0.02, 0.02, 0.24])
+
+create_primitive(name='back_12', primitive_type='cylinder', 
+                location=[0.21, 0.23, -0.21], 
+                scale=[0.02, 0.02, 0.24])
+
+create_curve(name='back decoration_7', control_points=[
+    [[-0.234, 0.467, -0.191], [-0.234, -0.021, -0.191]],
+    [[0.236, 0.467, -0.191], [0.236, -0.021, -0.191]]
+], smoothness=0.84)
+
+create_curve(name='arm_10', control_points=[
+    [[-0.2, -0.02, 0.18], [-0.19, 0.08, 0.18], [-0.19, 0.14, 0.19]]
+])
+
+create_curve(name='arm_11', control_points=[
+    [[0.2, -0.02, 0.18], [0.19, 0.08, 0.18], [0.19, 0.14, 0.19]]
+])
+
+create_primitive(name='leg_1', primitive_type='cylinder', 
                 location=[-0.21, -0.16, -0.21], 
                 scale=[0.02, 0.02, 0.24])
 
@@ -94,128 +120,193 @@ create_primitive(name='leg decoration_6', primitive_type='cylinder',
                 location=[0.21, -0.15, -0.02], 
                 scale=[0.02, 0.02, 0.19])
 
-create_curve(name='back decoration_7', control_points=[
-    [[-0.234, 0.467, -0.191], [-0.234, -0.021, -0.191]],
-    [[0.236, 0.467, -0.191], [0.236, -0.021, -0.191]]
-], smoothness=0.84)
+`,
 
-create_curve(name='seat_8', control_points=[
-    [[-0.0, -0.05, -0.23], [-0.24, -0.05, -0.23], [-0.24, -0.05, 0.09]]
-], thickness=0.0669)
+            table: `create_primitive(name='table top_9', primitive_type='cube', 
+                location=[0.0, 0.49, 0.0], 
+                scale=[0.2, 0.2, 0.01])
 
-create_primitive(name='back_9', primitive_type='cylinder', 
-                location=[-0.21, 0.23, -0.21], 
-                scale=[0.02, 0.02, 0.24])
+create_primitive(name='strecher_5', primitive_type='cylinder', 
+                location=[0.0, 0.2, -0.14], 
+                scale=[0.01, 0.01, 0.14])
 
-create_curve(name='arm_10', control_points=[
-    [[-0.2, -0.02, 0.18], [-0.19, 0.08, 0.18], [-0.19, 0.14, 0.19]]
-])
+create_primitive(name='strecher_6', primitive_type='cylinder', 
+                location=[-0.14, 0.2, 0.0], 
+                scale=[0.01, 0.01, 0.14])
 
-create_curve(name='arm_11', control_points=[
-    [[0.2, -0.02, 0.18], [0.19, 0.08, 0.18], [0.19, 0.14, 0.19]]
-])
+create_primitive(name='strecher_7', primitive_type='cylinder', 
+                location=[0.0, 0.2, 0.14], 
+                scale=[0.01, 0.01, 0.14])
 
-create_primitive(name='back_12', primitive_type='cylinder', 
-                location=[0.21, 0.23, -0.21], 
-                scale=[0.02, 0.02, 0.24])
+create_primitive(name='strecher_8', primitive_type='cylinder', 
+                location=[0.14, 0.2, 0.0], 
+                scale=[0.01, 0.01, 0.14])
+
+create_primitive(name='leg_1', primitive_type='cylinder', 
+                location=[-0.15, -0.5, -0.15], 
+                scale=[0.01, 0.01, 0.37])
+
+create_primitive(name='leg_2', primitive_type='cylinder', 
+                location=[-0.15, -0.5, 0.15], 
+                scale=[0.01, 0.01, 0.37])
+
+create_primitive(name='leg_3', primitive_type='cylinder', 
+                location=[0.15, -0.5, -0.15], 
+                scale=[0.01, 0.01, 0.37])
+
+create_primitive(name='leg_4', primitive_type='cylinder', 
+                location=[0.15, -0.5, 0.15], 
+                scale=[0.01, 0.01, 0.37])
 
 `,
 
-            table: `create_primitive(name='table_leg_1', primitive_type='cylinder', 
-                location=[-0.37, -0.18, -0.33], 
-                scale=[0.02, 0.02, 0.37])
+            lamp: `create_curve(name='cylinder shade_4', control_points=[
+    [[0.166, 0.0, 0.0], [0.18, 0.09, 0.0], [0.207, 0.346, 0.0]]
+], radius=0.11, location=[0, 0.43, 0])
 
-create_primitive(name='table_leg_2', primitive_type='cylinder', 
-                location=[-0.37, -0.18, 0.34], 
-                scale=[0.02, 0.02, 0.37])
+create_curve(name='bulb_12', control_points=[
+    [[0.032, 0.0, 0.0], [0.037, 0.011, 0.0], [0.044, 0.032, 0.0], [0.082, 0.118, 0.0]]
+], location=[0, 0.28, 0])
 
-create_primitive(name='table_leg_3', primitive_type='cylinder', 
-                location=[0.38, -0.18, -0.33], 
-                scale=[0.02, 0.02, 0.37])
-
-create_primitive(name='table_leg_4', primitive_type='cylinder', 
-                location=[0.38, -0.18, 0.34], 
-                scale=[0.02, 0.02, 0.37])
-
-create_primitive(name='table_5', primitive_type='cylinder', 
-                location=[0, 0.17, 0], 
-                scale=[0.44, 0.44, 0.04])
-
-# Change primitive_type from 'cylinder' to 'cube' for a square table!`,
-
-            lamp: `create_primitive(name='base_1', primitive_type='cylinder', 
+create_primitive(name='lamp post_2', primitive_type='cylinder', 
                 location=[0, -0.47, 0], 
-                scale=[0.15, 0.15, 0.05])
+                scale=[0.02, 0.02, 0.03])
 
-create_curve(name='metal pole_2', control_points=[
-    [[0, -0.42, 0], [0, 0.3, 0]]
-], thickness=0.02)
+create_primitive(name='lamp post_3', primitive_type='cylinder', 
+                location=[0, -0.11, 0], 
+                scale=[0.02, 0.02, 0.3])
 
-create_primitive(name='lamp_3', primitive_type='sphere', 
-                location=[0, 0.36, 0], 
-                scale=[0.2, 0.2, 0.2])
+create_primitive(name='lamp base_1', primitive_type='cylinder', 
+                location=[0, -0.47, 0], 
+                scale=[0.21, 0.21, 0.03])
+
+create_primitive(name='bulb tube_5', primitive_type='cylinder', 
+                location=[0, 0.26, 0], 
+                scale=[0.03, 0.03, 0.02])
+
+create_curve(name='bulb contact_7', control_points=[
+    [[0, 0.24, 0], [0, 0.23, 0], [0, 0.22, 0]]
+], thickness=0.03)
+
+create_primitive(name='lamp rack_6', primitive_type='cylinder', 
+                location=[-0.07, 0.34, -0.13], 
+                scale=[0.005, 0.005, 0.15])
+
+create_primitive(name='lamp rack_8', primitive_type='cylinder', 
+                location=[-0.07, 0.34, 0.13], 
+                scale=[0.005, 0.005, 0.15])
 
 `,
 
-            door: `create_primitive(name='door_frame_1', primitive_type='cube', 
-                location=[-0.4, 0, 0], 
-                scale=[0.04, 0.36, 0.85])
-
-create_primitive(name='door_frame_2', primitive_type='cube', 
-                location=[0.4, 0, 0], 
-                scale=[0.04, 0.36, 0.85])
-
-create_primitive(name='door_frame_3', primitive_type='cube', 
-                location=[0, 0, 0.84], 
-                scale=[0.44, 0.36, 0.04])
-
-create_primitive(name='door_4', primitive_type='cube', 
+            door: `create_primitive(name='door_1', primitive_type='cube', 
                 location=[0, 0, 0], 
-                scale=[0.36, 0.04, 0.8])
+                scale=[0.5, 0.22, 0.01])
 
-create_primitive(name='door handle_5', primitive_type='sphere', 
-                location=[0.15, 0.04, 0], 
-                scale=[0.02, 0.02, 0.02])
+create_curve(name='frame_2', control_points=[
+    [[-0.35, -0.36, 0], [0.35, -0.36, 0], [0.35, 0.36, 0], [-0.35, 0.36, 0]]
+], closed=True, location=[0, -0.03, 0])
 
-`,
+create_primitive(name='cube_3', primitive_type='cube', 
+                location=[0, -0.439, 0], 
+                scale=[0.002, 0.175, 0.01])
 
-            window: `create_curve(name='window frame_1', control_points=[
-    [[-0.42, -0.03, -0.43], [-0.42, -0.03, 0.44], [0.42, -0.03, 0.44], [0.42, -0.03, -0.43]]
+create_curve(name='knob_4', control_points=[
+    [[0, 0, 0], [0.017, 0, 0], [0.017, 0.006, 0], [0.008, 0.006, 0]]
+], location=[-0.2, -0.02, -0.01])
+
+create_curve(name='knob_5', control_points=[
+    [[0, 0, 0], [0.017, 0, 0], [0.017, 0.006, 0], [0.008, 0.006, 0]]
+], location=[-0.2, -0.02, 0.01])
+
+create_curve(name='knob_6', control_points=[
+    [[-0.199, -0.023, -0.039], [-0.196, -0.019, -0.037], [-0.16, -0.017, -0.036]]
 ], closed=True)
 
-create_primitive(name='glass pane_2', primitive_type='cube', 
-                location=[0, 0, 0], 
-                scale=[0.38, 0.02, 0.38])
-
-create_primitive(name='window sill_3', primitive_type='cube', 
-                location=[0, -0.06, -0.47], 
-                scale=[0.46, 0.04, 0.04])
+create_curve(name='knob_7', control_points=[
+    [[-0.199, -0.023, 0.04], [-0.196, -0.019, 0.04], [-0.16, -0.017, 0.04]]
+], closed=True)
 
 `,
 
-            toilet: `create_primitive(name='toilet_1', primitive_type='cylinder', 
-                location=[0, -0.27, 0.1], 
-                scale=[0.15, 0.15, 0.27])
+            window: `create_curve(name='panel_1', control_points=[
+    [[-0.425, -0.485, 0], [0.425, -0.485, 0], [0.425, 0.485, 0], [-0.425, 0.485, 0]]
+], closed=True, location=[0, -0.03, 0])
 
-create_primitive(name='toilet_2', primitive_type='cylinder', 
-                location=[0, -0.27, -0.27], 
-                scale=[0.13, 0.13, 0.09])
+create_curve(name='shutter_frame_2', control_points=[
+    [[-0.40, -0.455, 0], [0.40, -0.455, 0], [0.40, 0.455, 0], [-0.40, 0.455, 0]]
+], closed=True, location=[0, -0.03, 0])
 
-create_primitive(name='toilet_3', primitive_type='cylinder', 
-                location=[0, 0.17, 0.1], 
-                scale=[0.15, 0.15, 0.27])
+create_primitive(name='cube_3', primitive_type='cube', 
+                location=[0, -0.033, 0.414], 
+                scale=[0.002, 0.379, 0.01])
 
-create_primitive(name='toilet_4', primitive_type='cylinder', 
-                location=[0, 0.17, -0.27], 
-                scale=[0.13, 0.13, 0.09])
+create_curve(name='curtain_7', control_points=[
+    [[-0.24, 0.06, 0.49], [-0.24, 0.06, -0.49]]
+])
 
-create_primitive(name='toilet_5', primitive_type='cylinder', 
-                location=[0, -0.05, 0.1], 
-                scale=[0.13, 0.13, 0.05])
+create_curve(name='curtain_8', control_points=[
+    [[0.27, 0.06, 0.49], [0.27, 0.06, -0.49]]
+])
 
-create_primitive(name='toilet_6', primitive_type='cylinder', 
-                location=[0, -0.05, -0.27], 
-                scale=[0.11, 0.11, 0.05])
+create_curve(name='curtain_hold_6', control_points=[
+    [[0.42, 0.06, 0.46], [-0.42, 0.06, 0.46]]
+], thickness=0.004)
+
+create_primitive(name='curtain_hold_4', primitive_type='sphere', 
+                location=[-0.42, 0.06, 0.46], 
+                scale=[0.02, 0.02, 0.02])
+
+create_primitive(name='curtain_hold_5', primitive_type='cylinder', 
+                location=[-0.42, 0.04, 0.46], 
+                scale=[0.01, 0.01, 0.02])
+
+create_primitive(name='curtain_hold_9', primitive_type='sphere', 
+                location=[0.42, 0.06, 0.46], 
+                scale=[0.02, 0.02, 0.02])
+
+create_primitive(name='curtain_hold_10', primitive_type='cylinder', 
+                location=[0.42, 0.04, 0.46], 
+                scale=[0.01, 0.01, 0.02])
+
+`,
+
+            toilet: `create_curve(name='seat_4', control_points=[
+    [[0.174, -0.061, 0.422], [0.001, -0.061, 0.422], [-0.172, -0.061, 0.422]],
+    [[0.133, -0.061, 0.336], [0.001, -0.061, 0.336], [-0.131, -0.061, 0.336]]
+], closed=True)
+
+create_curve(name='stand_1', control_points=[
+    [[-0.102, -0.503, 0.244], [0.001, -0.503, 0.244], [0.105, -0.503, 0.244]],
+    [[-0.085, -0.331, 0.187], [0.001, -0.331, 0.187], [0.087, -0.331, 0.187]]
+], closed=True)
+
+create_curve(name='back_2', control_points=[
+    [[-0.26, -0.041, 0.723], [0.001, -0.041, 0.723], [0.261, -0.041, 0.723]],
+    [[-0.076, -0.569, 0.276], [0.001, -0.569, 0.276], [0.077, -0.569, 0.276]]
+], closed=True)
+
+create_curve(name='tube_3', control_points=[
+    [[-0.158, -0.065, 0.358], [0.001, -0.065, 0.359], [0.159, -0.065, 0.36]],
+    [[-0.158, -0.061, 0.358], [0.001, -0.061, 0.359], [0.159, -0.061, 0.36]],
+    [[-0.05, -0.327, 0.104], [0.001, -0.327, 0.104], [0.052, -0.327, 0.105]]
+], closed=True)
+
+create_primitive(name='tank_5', primitive_type='cube', 
+                location=[0, 0.07, -0.33], 
+                scale=[0.19, 0.15, 0.08])
+
+create_curve(name='cover_6', control_points=[
+    [[-0.186, 0.49, 0.131], [0.001, 0.49, 0.131], [0.187, 0.49, 0.131]],
+    [[-0.186, 0.502, 0.121], [0.001, 0.502, 0.121], [0.187, 0.502, 0.121]]
+], closed=True)
+
+create_primitive(name='cap_7', primitive_type='cube', 
+                location=[0, 0.21, -0.33], 
+                scale=[0.19, 0.08, 0.02])
+
+create_primitive(name='button_8', primitive_type='cylinder', 
+                location=[0, 0.23, -0.33], 
+                scale=[0.02, 0.02, 0.01])
 
 `,
 
@@ -225,23 +316,109 @@ create_primitive(name='toilet_6', primitive_type='cylinder',
 
 `,
 
-            bed_frame: `create_primitive(name='bed_1', primitive_type='cube', 
-                location=[0, -0.14, 0], 
-                scale=[0.41, 0.58, 0.05])
+            bed_frame: `create_primitive(name='head board_10', primitive_type='cylinder', 
+                location=[-0.45, 0.1, -0.47], 
+                scale=[0.01, 0.01, 0.16], 
+                rotation=[0.65, -0.65, -0.27, -0.27])
 
-create_primitive(name='bed_2', primitive_type='cube', 
-                location=[0, -0.14, -0.5], 
-                scale=[0.4, 0.11, 0.17])
+create_primitive(name='head board_11', primitive_type='cube', 
+                location=[0.0, 0.1, -0.47], 
+                scale=[0.45, 0.16, 0.02], 
+                rotation=[1.0, -0.0, -0.0, -0.0])
 
-create_primitive(name='bed_3', primitive_type='cube', 
-                location=[0, -0.14, 0.45], 
-                scale=[0.4, 0.11, 0.12])
+create_primitive(name='head board_12', primitive_type='cylinder', 
+                location=[0.45, 0.1, -0.47], 
+                scale=[0.01, 0.01, 0.16], 
+                rotation=[0.27, -0.27, 0.65, 0.65])
+
+create_primitive(name='head board_13', primitive_type='cone', 
+                location=[0.0, 0.27, -0.47], 
+                scale=[0.45, 0.02, 0.02], 
+                rotation=[0.71, -0.71, -0.0, -0.0])
+
+create_primitive(name='grid_9', primitive_type='cube', 
+                location=[-0.0, -0.063, 0.479], 
+                scale=[0.468, 0.021, 0.02], 
+                rotation=[0.0, -0.0, -0.707, 0.707])
+
+create_primitive(name='leg_1', primitive_type='cylinder', 
+                location=[-0.45, -0.17, -0.47], 
+                scale=[0.02, 0.02, 0.11], 
+                rotation=[0.62, -0.62, -0.33, -0.33])
+
+create_primitive(name='leg_2', primitive_type='cylinder', 
+                location=[-0.45, -0.17, 0.48], 
+                scale=[0.02, 0.02, 0.11], 
+                rotation=[0.65, -0.65, -0.27, -0.27])
+
+create_primitive(name='leg_3', primitive_type='cylinder', 
+                location=[0.45, -0.17, -0.47], 
+                scale=[0.02, 0.02, 0.11], 
+                rotation=[0.62, -0.62, -0.33, -0.33])
+
+create_primitive(name='leg_4', primitive_type='cylinder', 
+                location=[0.45, -0.17, 0.48], 
+                scale=[0.02, 0.02, 0.11], 
+                rotation=[0.27, -0.27, 0.65, 0.65])
+
+create_primitive(name='cube_5', primitive_type='cube', 
+                location=[-0.448, -0.154, -0.465], 
+                scale=[0.001, 0.089, 0.003], 
+                rotation=[0.0, -0.0, 0.0, 1.0])
+
+create_primitive(name='cube_6', primitive_type='cube', 
+                location=[0.442, -0.154, -0.477], 
+                scale=[0.0, 0.089, 0.002], 
+                rotation=[0.0, -0.707, 0.0, 0.707])
+
+create_primitive(name='cube_7', primitive_type='cube', 
+                location=[0.442, -0.154, 0.481], 
+                scale=[0.0, 0.089, 0.002], 
+                rotation=[0.0, -0.707, 0.0, 0.707])
+
+create_primitive(name='cube_8', primitive_type='cube', 
+                location=[0.448, -0.148, -0.465], 
+                scale=[0.0, 0.084, 0.002], 
+                rotation=[0.0, -0.0, 0.0, 1.0])
 
 `,
 
-            triangle_shelf: `create_primitive(name='triangle_1', primitive_type='cube', 
-                location=[0, 0.1, 0], 
-                scale=[0.2, 0.2, 0.02])
+            triangle_shelf: `create_curve(name='shelf board_5', control_points=[
+    [[-0.27, -0.38, 0.27], [-0.27, -0.35, 0.27]]
+], thickness=0.0)
+
+create_curve(name='shelf board_6', control_points=[
+    [[-0.27, 0.01, 0.27], [-0.27, 0.04, 0.27]]
+], thickness=0.0)
+
+create_curve(name='shelf board_8', control_points=[
+    [[-0.27, 0.4, 0.27], [-0.27, 0.43, 0.27]]
+], thickness=0.0)
+
+create_primitive(name='side board_4', primitive_type='cube', 
+                location=[-0.27, -0.42, 0.0], 
+                scale=[0.27, 0.03, 0.02], 
+                rotation=[0.7, -0.0, -0.71, -0.0])
+
+create_primitive(name='side board_7', primitive_type='cube', 
+                location=[-0.27, 0.37, 0.0], 
+                scale=[0.27, 0.03, 0.02], 
+                rotation=[0.7, -0.0, -0.71, -0.0])
+
+create_primitive(name='shelf leg_1', primitive_type='cube', 
+                location=[-0.27, 0.0, -0.26], 
+                scale=[0.5, 0.02, 0.02], 
+                rotation=[0.5, 0.5, 0.5, 0.5])
+
+create_primitive(name='shelf leg_2', primitive_type='cube', 
+                location=[-0.27, 0.0, 0.26], 
+                scale=[0.5, 0.02, 0.02], 
+                rotation=[0.5, 0.5, 0.5, 0.5])
+
+create_primitive(name='shelf leg_3', primitive_type='cube', 
+                location=[0.27, 0.0, 0.26], 
+                scale=[0.5, 0.02, 0.02], 
+                rotation=[0.5, 0.5, 0.5, 0.5])
 
 `,
         };
@@ -273,6 +450,7 @@ create_primitive(name='bed_3', primitive_type='cube',
         this.setupCodeEditor();
         this.setupMeshViewer();
         this.setupEventListeners();
+        
         this.isInitialized = true;
         
         console.log('Shape editor initialized successfully');
@@ -484,22 +662,20 @@ create_primitive(name='bed_3', primitive_type='cube',
         let functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
         console.log(`Direct match result for "${meshName}":`, functionBlock ? 'found' : 'not found');
         
-        // If no direct match, try partial matching for similar names
+        // If no direct match, try simple name normalization (remove spaces, underscores, case insensitive)
         if (!functionBlock) {
-            // Try finding by partial name matching (removing spaces, underscores)
             const normalizedMeshName = meshName.replace(/[\s_-]/g, '').toLowerCase();
             console.log(`Normalized mesh name: "${normalizedMeshName}"`);
             
             const meshPart = this.meshParts.find(part => {
                 const normalizedPartName = part.name.replace(/[\s_-]/g, '').toLowerCase();
                 console.log(`Comparing "${normalizedMeshName}" with "${normalizedPartName}"`);
-                return normalizedPartName.includes(normalizedMeshName) || 
-                       normalizedMeshName.includes(normalizedPartName);
+                return normalizedPartName === normalizedMeshName;
             });
             
             if (meshPart) {
                 functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshPart.name}"]`);
-                console.log(`Found partial match: ${meshName} -> ${meshPart.name}`);
+                console.log(`Found normalized match: ${meshName} -> ${meshPart.name}`);
             }
         }
         
@@ -510,9 +686,14 @@ create_primitive(name='bed_3', primitive_type='cube',
         } else {
             console.log(`Function block not found for mesh: ${meshName}`);
             console.log('Available function blocks:', Array.from(this.codeEditor.querySelectorAll('[data-mesh-name]')).map(b => b.dataset.meshName));
+            
+            // Log suggestion for fixing naming mismatch
+            console.warn(`NAMING MISMATCH: Mesh "${meshName}" not found in code. Check if:
+1. The mesh name in the 3D model (.glb) matches the function name in the code
+2. Consider renaming the mesh in Blender to match: ${this.meshParts.map(p => p.name).join(', ')}`);
         }
     }
-
+    
     handleCodeHover(event) {
         // This method is no longer needed with function blocks
         // Individual function blocks handle their own hover events
@@ -652,7 +833,7 @@ create_primitive(name='bed_3', primitive_type='cube',
                 }
             });
             
-            // Handle gallery item clicks
+            // Handle gallery dropdown item clicks
             const galleryItems = galleryDropdown.querySelectorAll('.gallery-item');
             galleryItems.forEach(item => {
                 item.addEventListener('click', (e) => {
@@ -665,6 +846,33 @@ create_primitive(name='bed_3', primitive_type='cube',
                 });
             });
         }
+        
+        // Handle gallery image clicks
+        const galleryImageItems = document.querySelectorAll('.gallery-image-item[data-model]');
+        galleryImageItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                const modelName = item.dataset.model;
+                if (modelName && modelName !== this.currentModel) {
+                    this.switchModel(modelName);
+                    this.updateGalleryImageSelection(item);
+                }
+            });
+            
+            // Add hover effects for gallery images
+            item.addEventListener('mouseenter', () => {
+                const img = item.querySelector('img');
+                if (img) {
+                    img.style.transform = 'scale(1.05)';
+                }
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                const img = item.querySelector('img');
+                if (img) {
+                    img.style.transform = 'scale(1)';
+                }
+            });
+        });
     }
     
     updateGallerySelection() {
@@ -679,6 +887,17 @@ create_primitive(name='bed_3', primitive_type='cube',
         const currentItem = galleryDropdown.querySelector(`[data-model="${this.currentModel}"]`);
         if (currentItem) {
             currentItem.classList.add('selected');
+        }
+    }
+    
+    updateGalleryImageSelection(selectedItem) {
+        // Remove previous selection from all gallery images
+        const galleryImageItems = document.querySelectorAll('.gallery-image-item[data-model]');
+        galleryImageItems.forEach(item => item.classList.remove('selected'));
+        
+        // Add selection to clicked item
+        if (selectedItem) {
+            selectedItem.classList.add('selected');
         }
     }
     
@@ -709,7 +928,7 @@ create_primitive(name='bed_3', primitive_type='cube',
             this.threeViewer.loadModel(modelPath);
         }
         
-        // Update gallery selection
+        // Update gallery selections
         this.updateGallerySelection();
         
         console.log(`Model switched to: ${modelName}`);
@@ -728,9 +947,6 @@ create_primitive(name='bed_3', primitive_type='cube',
             this.threeViewer.originalMaterials.clear();
             this.threeViewer.wireframeMaterials.clear();
             this.threeViewer.currentHighlightedMesh = null;
-            
-            // Clear any highlights
-            this.unhighlightMeshPart();
             
             console.log('Previous model cleared from scene');
         }

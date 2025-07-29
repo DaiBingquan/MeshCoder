@@ -168,7 +168,7 @@
 
 .code-editor {
     background: #ffffff;
-    height: 660px;
+    height: 450px;
     overflow-y: auto;
     overflow-x: hidden;
     font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
@@ -394,7 +394,145 @@
     border: 1px solid #ddd;
 }
 
+/* Gallery Styles */
+.gallery-image-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.gallery-image-item.selected {
+    border: 3px solid #4a90e2;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.gallery-image-item img {
+    transition: transform 0.2s ease;
+}
+
+.gallery-image-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.gallery-item.selected {
+    border: 3px solid #4a90e2;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.gallery-item img {
+    transition: transform 0.2s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-mesh-viewer-container,
+.gallery-code-editor-container {
+    position: relative;
+}
+
+.gallery-mesh-tip,
+.gallery-code-tip {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    background: #6c757d;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 0 0 0 4px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: help;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.gallery-mesh-tip:hover,
+.gallery-code-tip:hover {
+    background: #5a6268;
+}
+
+/* Gallery Code Function Blocks */
+.gallery-code-function-block {
+    position: relative;
+    margin-bottom: 15px;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.gallery-code-function-block:hover {
+    border-color: #4a90e2;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.1);
+}
+
+.gallery-code-function-block.function-highlighted {
+    border-color: #ffc107;
+    background-color: rgba(255, 243, 205, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
+    animation: functionBlockHighlight 0.3s ease;
+}
+
+.function-code-display {
+    padding: 12px;
+    font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    background: #f8f9fa;
+    border-top: 1px solid #e1e4e8;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Shape Understanding vertical alignment */
+.columns[style*="align-items: stretch"] .column {
+    display: flex;
+    flex-direction: column;
+}
+
+.columns[style*="align-items: stretch"] .column > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.understanding-code-container,
+.llm-processing-container,
+.understanding-qa-container {
+    min-height: 450px;
+}
+
+.llm-processing-indicator {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 /* Responsive adjustments */
+@media (max-width: 1024px) {
+    .gallery-item img,
+    .gallery-image-item img {
+        height: 100px;
+    }
+    
+    .understanding-code-container,
+    .llm-processing-container,
+    .understanding-qa-container {
+        min-height: 350px;
+    }
+}
+
 @media (max-width: 768px) {
     .code-editor {
         height: 450px;
@@ -410,8 +548,6 @@
         height: 300px;
     }
     
-    /* Editor toolbar responsive styles removed */
-    
     .viewer-controls .button {
         font-size: 11px;
         padding: 4px 8px;
@@ -420,5 +556,44 @@
     .function-header {
         padding: 6px 8px;
         font-size: 11px;
+    }
+    
+    .gallery-item img,
+    .gallery-image-item img {
+        height: 80px;
+    }
+    
+    /* Stack shape understanding vertically on mobile */
+    .columns[style*="align-items: stretch"] {
+        flex-direction: column;
+    }
+    
+    .columns[style*="align-items: stretch"] .column {
+        flex: none !important;
+        width: 100%;
+    }
+    
+    .understanding-code-container,
+    .llm-processing-container,
+    .understanding-qa-container {
+        min-height: 200px;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-item img,
+    .gallery-image-item img {
+        height: 60px;
+    }
+    
+    /* Stack gallery images on very small screens */
+    .gallery-container .columns {
+        flex-wrap: wrap;
+    }
+    
+    .gallery-container .column {
+        flex: 0 0 50%;
+        max-width: 50%;
     }
 } 

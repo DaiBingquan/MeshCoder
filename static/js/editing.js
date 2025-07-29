@@ -9,12 +9,14 @@ class ShapeEditor {
         this.threeViewer = null;
         this.codeEditor = null;
         this.currentCode = '';
+        this.currentModel = 'sofa'; // Default model
         this.meshParts = [];
         this.isInitialized = false;
         this.currentHighlightedFunction = null;
         
-        // Default code for editing
-        this.defaultCode = `create_primitive(name='cushion_11', primitive_type='cube', 
+        // Model code templates for editing (simplified versions with actual mesh names)
+        this.modelCodes = {
+            sofa: `create_primitive(name='cushion_11', primitive_type='cube', 
                 location=[0, -0.201, -0.08], 
                 scale=[0.42, 0.13, 0.32])
 
@@ -34,11 +36,11 @@ create_curve(name='arm_10', control_points=[
     [[0.278, 0.218, 0.499], [0.215, -0.421, 0.499]]
 ], smoothness=0.75)
 
-create_primitive(name='back_sofa_board_8', primitive_type='cube', 
+create_primitive(name='back sofa board_8', primitive_type='cube', 
                 location=[0, -0.101, -0.39], 
                 scale=[0.32, 0.1, 0.31])
 
-create_primitive(name='sofa_board_9', primitive_type='cube', 
+create_primitive(name='sofa board_9', primitive_type='cube', 
                 location=[0, -0.371, 0.041], 
                 scale=[0.33, 0.05, 0.33])
 
@@ -66,7 +68,186 @@ create_curve(name='leg_6', control_points=[
     [[0.39, -0.4, 0.18], [0.39, -0.48, 0.18]]
 ], thickness=0.01)
 
-# Try changing primitive_type or adjust scale/location values!`;
+`,
+
+            chair: `create_primitive(name='leg_1', primitive_type='cylinder', 
+                location=[-0.21, -0.16, -0.21], 
+                scale=[0.02, 0.02, 0.24])
+
+create_primitive(name='leg_2', primitive_type='cylinder', 
+                location=[-0.21, -0.16, 0.17], 
+                scale=[0.02, 0.02, 0.24])
+
+create_primitive(name='leg_3', primitive_type='cylinder', 
+                location=[0.21, -0.16, -0.21], 
+                scale=[0.02, 0.02, 0.24])
+
+create_primitive(name='leg_4', primitive_type='cylinder', 
+                location=[0.21, -0.16, 0.17], 
+                scale=[0.02, 0.02, 0.24])
+
+create_primitive(name='leg decoration_5', primitive_type='cylinder', 
+                location=[-0.21, -0.15, -0.02], 
+                scale=[0.02, 0.02, 0.19])
+
+create_primitive(name='leg decoration_6', primitive_type='cylinder', 
+                location=[0.21, -0.15, -0.02], 
+                scale=[0.02, 0.02, 0.19])
+
+create_curve(name='back decoration_7', control_points=[
+    [[-0.234, 0.467, -0.191], [-0.234, -0.021, -0.191]],
+    [[0.236, 0.467, -0.191], [0.236, -0.021, -0.191]]
+], smoothness=0.84)
+
+create_curve(name='seat_8', control_points=[
+    [[-0.0, -0.05, -0.23], [-0.24, -0.05, -0.23], [-0.24, -0.05, 0.09]]
+], thickness=0.0669)
+
+create_primitive(name='back_9', primitive_type='cylinder', 
+                location=[-0.21, 0.23, -0.21], 
+                scale=[0.02, 0.02, 0.24])
+
+create_curve(name='arm_10', control_points=[
+    [[-0.2, -0.02, 0.18], [-0.19, 0.08, 0.18], [-0.19, 0.14, 0.19]]
+])
+
+create_curve(name='arm_11', control_points=[
+    [[0.2, -0.02, 0.18], [0.19, 0.08, 0.18], [0.19, 0.14, 0.19]]
+])
+
+create_primitive(name='back_12', primitive_type='cylinder', 
+                location=[0.21, 0.23, -0.21], 
+                scale=[0.02, 0.02, 0.24])
+
+`,
+
+            table: `create_primitive(name='table_leg_1', primitive_type='cylinder', 
+                location=[-0.37, -0.18, -0.33], 
+                scale=[0.02, 0.02, 0.37])
+
+create_primitive(name='table_leg_2', primitive_type='cylinder', 
+                location=[-0.37, -0.18, 0.34], 
+                scale=[0.02, 0.02, 0.37])
+
+create_primitive(name='table_leg_3', primitive_type='cylinder', 
+                location=[0.38, -0.18, -0.33], 
+                scale=[0.02, 0.02, 0.37])
+
+create_primitive(name='table_leg_4', primitive_type='cylinder', 
+                location=[0.38, -0.18, 0.34], 
+                scale=[0.02, 0.02, 0.37])
+
+create_primitive(name='table_5', primitive_type='cylinder', 
+                location=[0, 0.17, 0], 
+                scale=[0.44, 0.44, 0.04])
+
+# Change primitive_type from 'cylinder' to 'cube' for a square table!`,
+
+            lamp: `create_primitive(name='base_1', primitive_type='cylinder', 
+                location=[0, -0.47, 0], 
+                scale=[0.15, 0.15, 0.05])
+
+create_curve(name='metal pole_2', control_points=[
+    [[0, -0.42, 0], [0, 0.3, 0]]
+], thickness=0.02)
+
+create_primitive(name='lamp_3', primitive_type='sphere', 
+                location=[0, 0.36, 0], 
+                scale=[0.2, 0.2, 0.2])
+
+`,
+
+            door: `create_primitive(name='door_frame_1', primitive_type='cube', 
+                location=[-0.4, 0, 0], 
+                scale=[0.04, 0.36, 0.85])
+
+create_primitive(name='door_frame_2', primitive_type='cube', 
+                location=[0.4, 0, 0], 
+                scale=[0.04, 0.36, 0.85])
+
+create_primitive(name='door_frame_3', primitive_type='cube', 
+                location=[0, 0, 0.84], 
+                scale=[0.44, 0.36, 0.04])
+
+create_primitive(name='door_4', primitive_type='cube', 
+                location=[0, 0, 0], 
+                scale=[0.36, 0.04, 0.8])
+
+create_primitive(name='door handle_5', primitive_type='sphere', 
+                location=[0.15, 0.04, 0], 
+                scale=[0.02, 0.02, 0.02])
+
+`,
+
+            window: `create_curve(name='window frame_1', control_points=[
+    [[-0.42, -0.03, -0.43], [-0.42, -0.03, 0.44], [0.42, -0.03, 0.44], [0.42, -0.03, -0.43]]
+], closed=True)
+
+create_primitive(name='glass pane_2', primitive_type='cube', 
+                location=[0, 0, 0], 
+                scale=[0.38, 0.02, 0.38])
+
+create_primitive(name='window sill_3', primitive_type='cube', 
+                location=[0, -0.06, -0.47], 
+                scale=[0.46, 0.04, 0.04])
+
+`,
+
+            toilet: `create_primitive(name='toilet_1', primitive_type='cylinder', 
+                location=[0, -0.27, 0.1], 
+                scale=[0.15, 0.15, 0.27])
+
+create_primitive(name='toilet_2', primitive_type='cylinder', 
+                location=[0, -0.27, -0.27], 
+                scale=[0.13, 0.13, 0.09])
+
+create_primitive(name='toilet_3', primitive_type='cylinder', 
+                location=[0, 0.17, 0.1], 
+                scale=[0.15, 0.15, 0.27])
+
+create_primitive(name='toilet_4', primitive_type='cylinder', 
+                location=[0, 0.17, -0.27], 
+                scale=[0.13, 0.13, 0.09])
+
+create_primitive(name='toilet_5', primitive_type='cylinder', 
+                location=[0, -0.05, 0.1], 
+                scale=[0.13, 0.13, 0.05])
+
+create_primitive(name='toilet_6', primitive_type='cylinder', 
+                location=[0, -0.05, -0.27], 
+                scale=[0.11, 0.11, 0.05])
+
+`,
+
+            bowl: `create_curve(name='bowl_1', control_points=[
+    [[0, 0, 0], [0.2, 0, 0], [0.25, 0.1, 0], [0.2, 0.2, 0]]
+], smoothness=0.8)
+
+`,
+
+            bed_frame: `create_primitive(name='bed_1', primitive_type='cube', 
+                location=[0, -0.14, 0], 
+                scale=[0.41, 0.58, 0.05])
+
+create_primitive(name='bed_2', primitive_type='cube', 
+                location=[0, -0.14, -0.5], 
+                scale=[0.4, 0.11, 0.17])
+
+create_primitive(name='bed_3', primitive_type='cube', 
+                location=[0, -0.14, 0.45], 
+                scale=[0.4, 0.11, 0.12])
+
+`,
+
+            triangle_shelf: `create_primitive(name='triangle_1', primitive_type='cube', 
+                location=[0, 0.1, 0], 
+                scale=[0.2, 0.2, 0.02])
+
+`,
+        };
+        
+        // Default code for editing
+        this.defaultCode = this.modelCodes.sofa;
         
         this.init();
     }
@@ -98,7 +279,7 @@ create_curve(name='leg_6', control_points=[
     }
     
     setupCodeEditor() {
-        this.currentCode = this.defaultCode;
+        this.currentCode = this.modelCodes[this.currentModel] || this.defaultCode;
         this.renderCodeInEditor();
     }
     
@@ -408,8 +589,10 @@ create_curve(name='leg_6', control_points=[
                 }
             };
             
-            // Load the model
-            this.threeViewer.loadModel('assets/models/sofa.glb');
+            // Load the current model
+            const modelPath = `assets/models/${this.currentModel}.glb`;
+            console.log(`Loading initial model: ${modelPath}`);
+            this.threeViewer.loadModel(modelPath);
         }
     }
 
@@ -439,6 +622,8 @@ create_curve(name='leg_6', control_points=[
     setupEventListeners() {
         const resetViewBtn = document.getElementById('resetViewBtn');
         const wireframeBtn = document.getElementById('wireframeBtn');
+        const galleryLabel = document.querySelector('.gallery-label');
+        const galleryDropdown = document.getElementById('galleryDropdown');
         
         if (resetViewBtn) {
             resetViewBtn.addEventListener('click', () => this.resetView());
@@ -447,6 +632,124 @@ create_curve(name='leg_6', control_points=[
         if (wireframeBtn) {
             wireframeBtn.addEventListener('click', () => this.toggleWireframe());
         }
+        
+        // Gallery functionality
+        if (galleryLabel && galleryDropdown) {
+            // Toggle gallery dropdown on click
+            galleryLabel.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = galleryDropdown.style.display !== 'none';
+                galleryDropdown.style.display = isVisible ? 'none' : 'block';
+                
+                // Mark current model as selected
+                this.updateGallerySelection();
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!galleryLabel.contains(e.target) && !galleryDropdown.contains(e.target)) {
+                    galleryDropdown.style.display = 'none';
+                }
+            });
+            
+            // Handle gallery item clicks
+            const galleryItems = galleryDropdown.querySelectorAll('.gallery-item');
+            galleryItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const modelName = item.dataset.model;
+                    if (modelName !== this.currentModel) {
+                        this.switchModel(modelName);
+                    }
+                    galleryDropdown.style.display = 'none';
+                });
+            });
+        }
+    }
+    
+    updateGallerySelection() {
+        const galleryDropdown = document.getElementById('galleryDropdown');
+        if (!galleryDropdown) return;
+        
+        // Remove previous selection
+        const galleryItems = galleryDropdown.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => item.classList.remove('selected'));
+        
+        // Add selection to current model
+        const currentItem = galleryDropdown.querySelector(`[data-model="${this.currentModel}"]`);
+        if (currentItem) {
+            currentItem.classList.add('selected');
+        }
+    }
+    
+    switchModel(modelName) {
+        if (!this.modelCodes[modelName]) {
+            console.warn(`Model ${modelName} not found in modelCodes`);
+            return;
+        }
+        
+        console.log(`Switching to model: ${modelName}`);
+        
+        // Clear the previous model first
+        this.clearCurrentModel();
+        
+        // Update current model
+        this.currentModel = modelName;
+        
+        // Update code
+        this.currentCode = this.modelCodes[modelName];
+        
+        // Re-render code editor
+        this.renderCodeInEditor();
+        
+        // Load 3D model
+        if (this.threeViewer) {
+            const modelPath = `assets/models/${modelName}.glb`;
+            console.log(`Loading model from: ${modelPath}`);
+            this.threeViewer.loadModel(modelPath);
+        }
+        
+        // Update gallery selection
+        this.updateGallerySelection();
+        
+        console.log(`Model switched to: ${modelName}`);
+    }
+    
+    clearCurrentModel() {
+        if (this.threeViewer && this.threeViewer.scene) {
+            // Remove the current model from the scene
+            if (this.threeViewer.model) {
+                this.threeViewer.scene.remove(this.threeViewer.model);
+                this.threeViewer.model = null;
+            }
+            
+            // Clear mesh objects and materials
+            this.threeViewer.meshObjects = {};
+            this.threeViewer.originalMaterials.clear();
+            this.threeViewer.wireframeMaterials.clear();
+            this.threeViewer.currentHighlightedMesh = null;
+            
+            // Clear any highlights
+            this.unhighlightMeshPart();
+            
+            console.log('Previous model cleared from scene');
+        }
+    }
+    
+    getModelDisplayName(modelName) {
+        const displayNames = {
+            sofa: 'Sofa',
+            chair: 'Chair', 
+            table: 'Table',
+            lamp: 'Lamp',
+            door: 'Door',
+            window: 'Window',
+            toilet: 'Toilet',
+            bowl: 'Bowl',
+            bed_frame: 'Bed Frame',
+            triangle_shelf: 'Triangle Shelf'
+        };
+        return displayNames[modelName] || modelName;
     }
     
     identifyMeshParts() {

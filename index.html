@@ -328,6 +328,9 @@
           <!-- 3D Mesh Viewer -->
           <div class="mesh-viewer-container mb-4">
             <h4 class="title is-5 has-text-centered">3D Mesh</h4>
+            <div class="gallery-label mesh-gallery" data-tooltip="Click to select different 3D models">
+              Gallery
+            </div>
             <div class="tip-label mesh-tip" data-tooltip="Left click and drag to orbit • Middle click/scroll to zoom • Right click to pan • Hover on mesh parts to highlight corresponding code">
               Tip
             </div>
@@ -336,6 +339,41 @@
                 <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
                   <i class="fas fa-cube fa-3x" style="margin-bottom: 1rem;"></i>
                   <p>Loading 3D Model...</p>
+                </div>
+              </div>
+            </div>
+            <!-- Gallery Dropdown Menu -->
+            <div class="gallery-dropdown" id="galleryDropdown" style="display: none;">
+              <div class="gallery-dropdown-content">
+                <div class="gallery-item" data-model="sofa">
+                  <span class="gallery-item-name">Sofa</span>
+                </div>
+                <div class="gallery-item" data-model="chair">
+                  <span class="gallery-item-name">Chair</span>
+                </div>
+                <div class="gallery-item" data-model="table">
+                  <span class="gallery-item-name">Table</span>
+                </div>
+                <div class="gallery-item" data-model="lamp">
+                  <span class="gallery-item-name">Lamp</span>
+                </div>
+                <div class="gallery-item" data-model="door">
+                  <span class="gallery-item-name">Door</span>
+                </div>
+                <div class="gallery-item" data-model="window">
+                  <span class="gallery-item-name">Window</span>
+                </div>
+                <div class="gallery-item" data-model="toilet">
+                  <span class="gallery-item-name">Toilet</span>
+                </div>
+                <div class="gallery-item" data-model="bowl">
+                  <span class="gallery-item-name">Bowl</span>
+                </div>
+                <div class="gallery-item" data-model="bed_frame">
+                  <span class="gallery-item-name">Bed Frame</span>
+                </div>
+                <div class="gallery-item" data-model="triangle_shelf">
+                  <span class="gallery-item-name">Triangle Shelf</span>
                 </div>
               </div>
             </div>

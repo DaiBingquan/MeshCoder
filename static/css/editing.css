@@ -33,13 +33,36 @@
     background: #5a6268;
 }
 
-/* Tooltip styles */
-.tip-label::after {
+/* Gallery Label Styles */
+.gallery-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: #28a745;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 0 0 4px 0;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.gallery-label:hover {
+    background: #218838;
+}
+
+/* Tooltip styles - Updated to show below */
+.tip-label::after,
+.gallery-label::after {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: 100%;
-    right: 0;
-    margin-bottom: 8px;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 8px;
     padding: 8px 12px;
     background: rgba(0, 0, 0, 0.9);
     color: white;
@@ -53,20 +76,22 @@
     word-wrap: break-word;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-5px);
+    transform: translateX(-50%) translateY(5px);
     transition: all 0.3s ease;
     z-index: 1000;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.tip-label::before {
+.tip-label::before,
+.gallery-label::before {
     content: '';
     position: absolute;
-    bottom: 100%;
-    right: 16px;
-    margin-bottom: 2px;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 2px;
     border: 4px solid transparent;
-    border-top-color: rgba(0, 0, 0, 0.9);
+    border-bottom-color: rgba(0, 0, 0, 0.9);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -74,12 +99,62 @@
 }
 
 .tip-label:hover::after,
-.tip-label:hover::before {
+.tip-label:hover::before,
+.gallery-label:hover::after,
+.gallery-label:hover::before {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 
+/* Gallery Dropdown Styles */
+.gallery-dropdown {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    z-index: 1000;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.gallery-dropdown-content {
+    padding: 4px 0;
+}
+
+.gallery-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.gallery-item:last-child {
+    border-bottom: none;
+}
+
+.gallery-item:hover {
+    background-color: #f8f9fa;
+}
+
+.gallery-item.selected {
+    background-color: #e7f3ff;
+    color: #0066cc;
+    font-weight: 500;
+}
+
+.gallery-item-name {
+    font-size: 13px;
+    color: #333;
+}
+
+.gallery-item:hover .gallery-item-name {
+    color: #0066cc;
+}
 
 
 .code-editor-wrapper {

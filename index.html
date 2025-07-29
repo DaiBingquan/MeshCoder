@@ -532,16 +532,16 @@
             <h4 class="title is-5 has-text-centered">Shape Analysis</h4>
             <div class="qa-wrapper">
               <div class="question-set" id="questionSet">
-                <div class="qa-item" data-question="legs">
+                <div class="qa-item" data-question="components">
                   <div class="question">
                     <span class="question-icon">Q:</span>
-                    <span class="question-text">How many legs does this sofa have?</span>
-                    <button class="ask-button" data-target="legs">Ask</button>
+                    <span class="question-text">What is the structure of this object?</span>
+                    <button class="ask-button" data-target="components">Ask</button>
                   </div>
-                  <div class="answer" id="answer-legs" style="display: none;">
+                  <div class="answer" id="answer-components" style="display: none;">
                     <div class="answer-content">
                       <span class="answer-icon">🤖</span>
-                      <span class="answer-text">This sofa has 6 legs (leg_1 through leg_6) created using curve primitives with very thin thickness (0.01). They are positioned at different points around the chair for optimal stability.</span>
+                      <span class="answer-text">This sofa consists of 11 mesh components: back_sofa_board_8 (backrest), sofa_board_9 (base seat), cushion_11 and cushion_12 (padding elements), arm_7 and arm_10 (curved armrests), and leg_1 through leg_6 (support legs).</span>
                     </div>
                   </div>
                 </div>
@@ -560,16 +560,16 @@
                   </div>
                 </div>
                 
-                <div class="qa-item" data-question="components">
+                <div class="qa-item" data-question="legs">
                   <div class="question">
                     <span class="question-icon">Q:</span>
-                    <span class="question-text">What is the structure of this object?</span>
-                    <button class="ask-button" data-target="components">Ask</button>
+                    <span class="question-text">How many legs does this sofa have?</span>
+                    <button class="ask-button" data-target="legs">Ask</button>
                   </div>
-                  <div class="answer" id="answer-components" style="display: none;">
+                  <div class="answer" id="answer-legs" style="display: none;">
                     <div class="answer-content">
                       <span class="answer-icon">🤖</span>
-                      <span class="answer-text">This sofa consists of 11 mesh components: back_sofa_board_8 (backrest), sofa_board_9 (base seat), cushion_11 and cushion_12 (padding elements), arm_7 and arm_10 (curved armrests), and leg_1 through leg_6 (support legs).</span>
+                      <span class="answer-text">This sofa has 6 legs (leg_1 through leg_6) created using curve primitives with very thin thickness (0.01). They are positioned at different points around the chair for optimal stability.</span>
                     </div>
                   </div>
                 </div>

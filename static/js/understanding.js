@@ -57,8 +57,7 @@ create_curve(name='leg_5', control_points=[
 create_curve(name='leg_6', control_points=[
     [[0.39, -0.4, 0.18], [0.39, -0.48, 0.18]]
 ], thickness=0.01)
-
-# Try changing primitive_type or adjust scale/location values!`;
+`;
         
         this.init();
         this.setupEventListeners();
@@ -68,6 +67,8 @@ create_curve(name='leg_6', control_points=[
         this.initCodeDisplay();
         this.renderCode();
         this.initProcessingState();
+        this.syncHeights();
+        this.setupHeightObserver();
     }
 
     initProcessingState() {
@@ -247,6 +248,11 @@ create_curve(name='leg_6', control_points=[
             button.textContent = 'Asked';
             button.classList.remove('processing');
             button.classList.add('answered');
+            
+            // Sync heights after answer is shown
+            setTimeout(() => {
+                this.syncHeights();
+            }, 350);
         }
 
         // Stop processing animation
@@ -306,6 +312,62 @@ create_curve(name='leg_6', control_points=[
         if (this.codeDisplay) {
             // Trigger re-render if needed
             this.renderCode();
+        }
+        // Also sync heights on resize
+        this.syncHeights();
+    }
+
+    // Sync left code display and middle LLM panel height with right QA container height
+    syncHeights() {
+        const qaContainer = document.querySelector('.understanding-qa-container');
+        const codeDisplay = document.getElementById('understandingCodeDisplay');
+        const llmContainer = document.querySelector('.llm-processing-container');
+        
+        if (qaContainer && (codeDisplay || llmContainer)) {
+            // Get the actual height of the QA container content
+            const qaHeight = qaContainer.offsetHeight;
+            // For code display: subtract padding and header space (approximately 80px)
+            const codeHeight = Math.max(200, qaHeight - 80);
+            // For LLM container: subtract less padding since it has different structure (approximately 50px)
+            const llmHeight = Math.max(200, qaHeight - 50);
+            
+            if (codeDisplay) {
+                codeDisplay.style.height = `${codeHeight}px`;
+            }
+            
+            if (llmContainer) {
+                llmContainer.style.height = `${llmHeight}px`;
+            }
+        }
+    }
+
+    // Setup observer to watch for height changes in QA container
+    setupHeightObserver() {
+        const qaContainer = document.querySelector('.understanding-qa-container');
+        
+        if (qaContainer && window.ResizeObserver) {
+            const resizeObserver = new ResizeObserver(() => {
+                this.syncHeights();
+            });
+            resizeObserver.observe(qaContainer);
+        }
+        
+        // Also observe for DOM changes in QA content
+        const qaWrapper = document.querySelector('.qa-wrapper');
+        if (qaWrapper && window.MutationObserver) {
+            const mutationObserver = new MutationObserver(() => {
+                // Delay sync to allow for animation completion
+                setTimeout(() => {
+                    this.syncHeights();
+                }, 350);
+            });
+            
+            mutationObserver.observe(qaWrapper, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style']
+            });
         }
     }
 }

@@ -6,7 +6,7 @@
 /* Shape Understanding Layout - 2/5, 1/5, 2/5 Proportions */
 .shape-understanding-columns {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 1.5rem;
   min-height: 450px;
 }
@@ -48,7 +48,7 @@
   border-radius: 8px;
   background: #ffffff;
   border: 1px solid #ddd;
-  overflow: hidden;
+  overflow: auto;
   flex: 1;
 }
 
@@ -85,7 +85,7 @@
 .understanding-code-display {
   background: #ffffff;
   padding: 15px;
-  height: 400px;
+  height: 350px;
   overflow-y: auto;
   overflow-x: auto;
   white-space: pre;
@@ -95,6 +95,7 @@
   min-width: max-content;
   box-sizing: border-box;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  transition: height 0.3s ease;
 }
 
 .understanding-code-display.wrap-mode {
@@ -220,10 +221,11 @@
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 100%;
+  height: 350px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: height 0.3s ease;
 }
 
 .llm-processing-indicator {

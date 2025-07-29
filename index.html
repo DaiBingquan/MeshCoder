@@ -191,217 +191,13 @@
 </section>
 
 
-<!-- Code Animation Section -->
-<section class="section" style="background: #ffffff; padding: 0.5rem 0;">
-  <div class="container is-max-desktop mb-0">
-    <!-- First Row: Two Videos -->
-    <div class="columns is-vcentered is-variable is-6 mb-4">
-      <!-- Left Video -->
-      <div class="column is-6 has-text-centered">
-        <video src="assets/videos/sofa_pointcloud.mp4"
-               style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;"
-               controls autoplay loop muted playsinline>
-          您的浏览器不支持 video 标签。
-        </video>
-        <p style="margin-top: 1rem; font-weight: bold; color: #666;">Point Cloud Input</p>
-      </div>
-      
-      <!-- Right Video -->
-      <div class="column is-6 has-text-centered">
-        <video src="assets/videos/sofa_mesh.mp4" 
-               style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;" 
-               controls autoplay loop muted playsinline>
-          您的浏览器不支持 video 标签。
-        </video>
-        <p style="margin-top: 1rem; font-weight: bold; color: #666;">Code-generated mesh(with wireframe)</p>
-      </div>
-    </div>
-    
-    <!-- Second Row: Arrows -->
-    <div class="columns is-vcentered is-variable is-6 mb-2">
-      <!-- Left Arrow (Down) -->
-      <div class="column is-6 has-text-centered">
-        <div style="font-size: 2rem; color: #569cd6;">↓</div>
-      </div>
-      
-      <!-- Right Arrow (Up) -->
-      <div class="column is-6 has-text-centered">
-        <div style="font-size: 2rem; color: #569cd6;">↑</div>
-      </div>
-    </div>
-  </div>
-  
+<!-- Project Overview Image Section -->
+<section class="section" style="background: #ffffff; padding: 1.5rem 0;">
   <div class="container is-max-desktop">
-    <p style="margin-bottom: 1.5rem; font-weight: bold; color: #666; text-align: center;">Generated Code</p>
-    <div style="border-radius: 8px; background: #ffffff; border: 1px solid #ddd; position: relative;">
-      <!-- Code Animation Container -->
-      <div class="container" style="height: 400px;">
-        <button class="wrap-toggle-btn" id="wrapToggleBtn" title="Toggle code wrapping">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M3 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M3 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M15 12L18 15L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <button class="fullscreen-toggle-btn" id="fullscreenToggleBtn" title="Toggle fullscreen view">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 4H10V6H6V10H4V4Z" fill="currentColor"/>
-            <path d="M20 4V10H18V6H14V4H20Z" fill="currentColor"/>
-            <path d="M20 20H14V18H18V14H20V20Z" fill="currentColor"/>
-            <path d="M4 20V14H6V18H10V20H4Z" fill="currentColor"/>
-          </svg>
-        </button>
-        <div class="code-display" id="codeDisplay">
-          <!-- All code content rendered here -->
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Gallery Section -->
-<section class="section" style="background: #f8f9fa; padding: 2rem 0;">
-  <div class="container is-max-desktop">
-    
-    <!-- Gallery 3D Viewer and Code Editor - Using Original Shape Editing Logic -->
-    <div class="columns is-variable is-6">
-      <!-- Left Side: 3D Mesh Viewer -->
-      <div class="column is-half">
-        <div class="mesh-viewer-container">
-          <h4 class="title is-5 has-text-centered">3D Mesh</h4>
-          <div class="gallery-label mesh-gallery" data-tooltip="Click to select different 3D models">
-            Gallery
-          </div>
-          <div class="tip-label mesh-tip" data-tooltip="Left click and drag to orbit • Middle click/scroll to zoom • Right click to pan • Hover on mesh parts to highlight corresponding code">
-            Tip
-          </div>
-          <div class="model-viewer-wrapper">
-            <div id="meshViewer" style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; position: relative;">
-              <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
-                <i class="fas fa-cube fa-3x" style="margin-bottom: 1rem;"></i>
-                <p>Loading 3D Model...</p>
-              </div>
-            </div>
-          </div>
-          <!-- Gallery Dropdown Menu -->
-          <div class="gallery-dropdown" id="galleryDropdown" style="display: none;">
-            <div class="gallery-dropdown-content">
-              <div class="gallery-item" data-model="sofa">
-                <span class="gallery-item-name">Sofa</span>
-              </div>
-              <div class="gallery-item" data-model="chair">
-                <span class="gallery-item-name">Chair</span>
-              </div>
-              <div class="gallery-item" data-model="table">
-                <span class="gallery-item-name">Table</span>
-              </div>
-              <div class="gallery-item" data-model="lamp">
-                <span class="gallery-item-name">Lamp</span>
-              </div>
-              <div class="gallery-item" data-model="door">
-                <span class="gallery-item-name">Door</span>
-              </div>
-              <div class="gallery-item" data-model="window">
-                <span class="gallery-item-name">Window</span>
-              </div>
-              <div class="gallery-item" data-model="toilet">
-                <span class="gallery-item-name">Toilet</span>
-              </div>
-              <div class="gallery-item" data-model="bowl">
-                <span class="gallery-item-name">Bowl</span>
-              </div>
-              <div class="gallery-item" data-model="bed_frame">
-                <span class="gallery-item-name">Bed Frame</span>
-              </div>
-              <div class="gallery-item" data-model="triangle_shelf">
-                <span class="gallery-item-name">Triangle Shelf</span>
-              </div>
-            </div>
-          </div>
-          <div class="viewer-controls" style="margin-top: 1rem; text-align: center;">
-            <button class="button is-small is-primary" id="resetViewBtn">Reset View</button>
-            <button class="button is-small is-info" id="wireframeBtn">Toggle Wireframe</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Right Side: Editable Code -->
-      <div class="column is-half">
-        <div class="code-editor-container">
-          <h4 class="title is-5 has-text-centered">Editable Code</h4>
-          <div class="tip-label code-tip" data-tooltip="Hover on code blocks to highlight corresponding mesh parts">
-            Tip
-          </div>
-          <div class="code-editor-wrapper">
-            <div id="codeEditor" class="code-editor"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Gallery Images Below - 5 per row -->
-    <div class="gallery-images-section mt-6">
-      <h2 class="title is-3 has-text-centered mb-5">Gallery</h2>
-      
-      <div class="gallery-container">
-        <!-- Row 1 -->
-        <div class="columns is-variable is-2 mb-3">
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="sofa">
-              <img src="assets/imgs/gallery/sofa.jpg" alt="Sofa" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="chair">
-              <img src="assets/imgs/gallery/chair.jpg" alt="Chair" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="table">
-              <img src="assets/imgs/gallery/table.jpg" alt="Table" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="lamp">
-              <img src="assets/imgs/gallery/lamp.jpg" alt="Lamp" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="door">
-              <img src="assets/imgs/gallery/door.jpg" alt="Door" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-        </div>
-        
-        <!-- Row 2 -->
-        <div class="columns is-variable is-2 mb-3">
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="window">
-              <img src="assets/imgs/gallery/window.jpg" alt="Window" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="toilet">
-              <img src="assets/imgs/gallery/toilet.jpg" alt="Toilet" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="bowl">
-              <img src="assets/imgs/gallery/bowl.jpg" alt="Bowl" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="bed_frame">
-              <img src="assets/imgs/gallery/bedframe.jpg" alt="Bed Frame" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="gallery-image-item" data-model="triangle_shelf">
-              <img src="assets/imgs/gallery/triangle_shelf.jpg" alt="Triangle Shelf" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
-            </div>
-          </div>
-        </div>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths has-text-centered">
+        <img src="assets/imgs/project.jpg" alt="MeshLLM Project Overview" style="width:100%; max-width:1000px; height:auto; border-radius:8px; border:1px solid #ddd;" />
+        <p style="margin: 0; font-size: 1.1rem; color: #666;">MeshLLM generates structured mesh code from 3D point clouds, enhancing shape editing and understanding.</p>
       </div>
     </div>
   </div>
@@ -451,6 +247,225 @@
     <p> Video of the MeshLLM. To be recorded and uploaded...</p> 
     <!--/ Paper video. -->
 
+  </div>
+</section>
+
+<!-- Code Animation Section -->
+<section class="section" style="background: #ffffff; padding: 0.5rem 0;">
+  <div class="container is-max-desktop mb-0">
+    <!-- First Row: Two Videos -->
+    <div class="columns is-vcentered is-variable is-6 mb-4">
+      <!-- Left Video -->
+      <div class="column is-6 has-text-centered">
+        <video src="assets/videos/sofa_pointcloud.mp4"
+               style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;"
+               controls autoplay loop muted playsinline>
+          您的浏览器不支持 video 标签。
+        </video>
+        <p style="margin-top: 1rem; font-weight: bold; color: #666;">Point Cloud Input</p>
+      </div>
+      
+      <!-- Right Video -->
+      <div class="column is-6 has-text-centered">
+        <video src="assets/videos/sofa_mesh.mp4" 
+               style="max-width: 80%; height: 300px; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;" 
+               controls autoplay loop muted playsinline>
+          您的浏览器不支持 video 标签。
+        </video>
+        <p style="margin-top: 1rem; font-weight: bold; color: #666;">Code-generated mesh(with wireframe)</p>
+      </div>
+    </div>
+    
+    <!-- Second Row: Arrows -->
+    <div class="columns is-vcentered is-variable is-6 mb-2">
+      <!-- Left Arrow (Down) -->
+      <div class="column is-6 has-text-centered">
+        <div style="font-size: 2rem; color: #569cd6;">↓</div>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666; font-weight: 500;">MeshLLM generate mesh code from point cloud</p>
+      </div>
+      
+      <!-- Right Arrow (Up) -->
+      <div class="column is-6 has-text-centered">
+        <div style="font-size: 2rem; color: #569cd6;">↑</div>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666; font-weight: 500;">run code in 3d editing softwares (blender) and generate high quality mesh</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container is-max-desktop">
+    <p style="margin-bottom: 1.5rem; font-weight: bold; color: #666; text-align: center;">Generated Code</p>
+    <div style="border-radius: 8px; background: #ffffff; border: 1px solid #ddd; position: relative;">
+      <!-- Code Animation Container -->
+      <div class="container" style="height: 400px;">
+        <button class="wrap-toggle-btn" id="wrapToggleBtn" title="Toggle code wrapping">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M3 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M3 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M15 12L18 15L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="fullscreen-toggle-btn" id="fullscreenToggleBtn" title="Toggle fullscreen view">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4H10V6H6V10H4V4Z" fill="currentColor"/>
+            <path d="M20 4V10H18V6H14V4H20Z" fill="currentColor"/>
+            <path d="M20 20H14V18H18V14H20V20Z" fill="currentColor"/>
+            <path d="M4 20V14H6V18H10V20H4Z" fill="currentColor"/>
+          </svg>
+        </button>
+        <div class="code-display" id="codeDisplay">
+          <!-- All code content rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section -->
+<section class="section" style="background: #f8f9fa; padding: 2rem 0;">
+  <div class="container is-max-desktop">
+    
+    <!-- Gallery Title -->
+    <h2 class="title is-3 has-text-centered mb-5">Gallery</h2>
+    
+    <!-- Gallery 3D Viewer and Code Editor - Using Original Shape Editing Logic -->
+    <div class="columns is-variable is-6">
+      <!-- Left Side: 3D Mesh Viewer -->
+      <div class="column is-half">
+        <div class="mesh-viewer-container">
+          <h4 class="title is-5 has-text-centered">3D Mesh</h4>
+          <div class="gallery-label mesh-gallery" data-tooltip="Click to select different 3D models">
+            Gallery
+          </div>
+          <div class="tip-label mesh-tip" data-tooltip="Left click and drag to orbit • Middle click/scroll to zoom • Right click to pan • Hover on mesh parts to highlight corresponding code">
+            Tip
+          </div>
+          <div class="model-viewer-wrapper">
+            <div id="meshViewer" style="width: 100%; height: 400px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; position: relative;">
+              <div class="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
+                <i class="fas fa-cube fa-3x" style="margin-bottom: 1rem;"></i>
+                <p>Loading 3D Model...</p>
+              </div>
+            </div>
+          </div>
+          <!-- Gallery Dropdown Menu -->
+          <div class="gallery-dropdown" id="galleryDropdown" style="display: none;">
+            <div class="gallery-dropdown-content">
+              <div class="gallery-item" data-model="sofa">
+                <span class="gallery-item-name">Sofa</span>
+              </div>
+              <div class="gallery-item" data-model="chair">
+                <span class="gallery-item-name">Chair</span>
+              </div>
+              <div class="gallery-item" data-model="table">
+                <span class="gallery-item-name">Table</span>
+              </div>
+              <div class="gallery-item" data-model="lamp">
+                <span class="gallery-item-name">Lamp</span>
+              </div>
+              <div class="gallery-item" data-model="door">
+                <span class="gallery-item-name">Door</span>
+              </div>
+              <div class="gallery-item" data-model="window">
+                <span class="gallery-item-name">Window</span>
+              </div>
+              <div class="gallery-item" data-model="toilet">
+                <span class="gallery-item-name">Toilet</span>
+              </div>
+              <div class="gallery-item" data-model="bowl">
+                <span class="gallery-item-name">Bowl</span>
+              </div>
+              <div class="gallery-item" data-model="office_chair">
+                <span class="gallery-item-name">Office Chair</span>
+              </div>
+              <div class="gallery-item" data-model="triangle_shelf">
+                <span class="gallery-item-name">Triangle Shelf</span>
+              </div>
+            </div>
+          </div>
+          <div class="viewer-controls" style="margin-top: 1rem; text-align: center;">
+            <button class="button is-small is-primary" id="resetViewBtn">Reset View</button>
+            <button class="button is-small is-info" id="wireframeBtn">Toggle Wireframe</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Side: Editable Code -->
+      <div class="column is-half">
+        <div class="code-editor-container">
+          <h4 class="title is-5 has-text-centered">Editable Code</h4>
+          <div class="tip-label code-tip" data-tooltip="Hover on code blocks to highlight corresponding mesh parts">
+            Tip
+          </div>
+          <div class="code-editor-wrapper">
+            <div id="codeEditor" class="code-editor"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Gallery Images Below - 5 per row -->
+    <div class="gallery-images-section mt-2">      
+      <div class="gallery-container">
+        <!-- Row 1 -->
+        <div class="columns is-variable is-2 mb-2">
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="sofa">
+              <img src="assets/imgs/gallery/sofa.jpg" alt="Sofa" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="chair">
+              <img src="assets/imgs/gallery/chair.jpg" alt="Chair" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="table">
+              <img src="assets/imgs/gallery/table.jpg" alt="Table" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="lamp">
+              <img src="assets/imgs/gallery/lamp.jpg" alt="Lamp" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="door">
+              <img src="assets/imgs/gallery/door.jpg" alt="Door" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="columns is-variable is-2 mb-2">
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="window">
+              <img src="assets/imgs/gallery/window.jpg" alt="Window" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="toilet">
+              <img src="assets/imgs/gallery/toilet.jpg" alt="Toilet" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="bowl">
+              <img src="assets/imgs/gallery/bowl.jpg" alt="Bowl" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="office_chair">
+              <img src="assets/imgs/gallery/office_chair.jpg" alt="Office Chair" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="gallery-image-item" data-model="triangle_shelf">
+              <img src="assets/imgs/gallery/triangle_shelf.jpg" alt="Triangle Shelf" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s ease;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 

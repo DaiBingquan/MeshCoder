@@ -490,6 +490,65 @@ body {
   margin: 0 0.25rem;
 }
 
+/* Visitor Statistics Styles */
+.visitor-stats-container {
+  text-align: center;
+  margin-top: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e9ecef;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 8px;
+}
+
+.visitor-counter {
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+.visitor-text {
+  color: #666;
+  font-weight: 400;
+}
+
+.visitor-number {
+  color: #569cd6;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(86, 156, 214, 0.1);
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.visitor-number:hover {
+  color: #4a85c7;
+  transform: scale(1.05);
+  text-shadow: 0 1px 8px rgba(86, 156, 214, 0.3);
+}
+
+.visitor-emoji {
+  display: inline-block;
+  animation: rotate 10s linear infinite;
+  margin-left: 4px;
+  font-size: 1.1em;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Number animation when loading */
+.visitor-number.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   .code-editor {
@@ -504,5 +563,13 @@ body {
   .mesh-viewer-container,
   .code-editor-container {
     margin-bottom: 1rem;
+  }
+  
+  .visitor-counter {
+    font-size: 0.8rem;
+  }
+  
+  .visitor-emoji {
+    font-size: 1em;
   }
 }

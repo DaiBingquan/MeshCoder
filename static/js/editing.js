@@ -316,98 +316,82 @@ create_primitive(name='button_8', primitive_type='cylinder',
 
 `,
 
-            office_chair: `create_curve(name='seat_23', control_points=[
+            office_chair: `create_curve(name='seat_19', control_points=[
     [[-0.21, 0.0, -0.17], [-0.21, 0.22, -0.17], [0.0, 0.22, -0.17], 
      [0.21, 0.22, -0.17], [0.21, 0.0, -0.17], [0.21, 0.0, 0.17], 
      [0.0, 0.0, 0.17], [-0.21, 0.0, 0.17]]
 ], smoothness=0.5, closed=True)
 
+create_curve(name='chair base_13', control_points=[
+    [[-0.17, -0.37, -0.15], [-0.01, -0.37, 0.01]]
+], thickness=0.03)
+
+create_curve(name='chair base_14', control_points=[
+    [[-0.15, -0.37, 0.17], [0.01, -0.37, 0.01]]
+], thickness=0.03)
+
+create_curve(name='chair base_15', control_points=[
+    [[0.15, -0.42, 0.17], [-0.01, -0.42, 0.01]]
+], thickness=0.03)
+
 create_curve(name='chair base_16', control_points=[
-    [[-0.2, -0.4, -0.06], [-0.0, -0.4, 0.02]]
+    [[0.17, -0.42, -0.15], [0.01, -0.42, 0.01]]
 ], thickness=0.03)
 
-create_curve(name='chair base_17', control_points=[
-    [[0.01, -0.44, 0.01], [-0.12, -0.44, 0.19]]
-], thickness=0.03)
-
-create_curve(name='chair base_18', control_points=[
-    [[0.01, -0.44, -0.22], [0.01, -0.44, 0.0]]
-], thickness=0.03)
-
-create_curve(name='chair base_19', control_points=[
-    [[0.22, -0.44, -0.06], [0.01, -0.44, 0.02]]
-], thickness=0.03)
-
-create_curve(name='chair base_21', control_points=[
-    [[0.12, -0.44, 0.19], [-0.0, -0.44, 0.01]]
-], thickness=0.03)
-
-create_primitive(name='leg_20', primitive_type='cylinder', 
+create_primitive(name='leg_17', primitive_type='cylinder', 
                 location=[0.0, -0.28, 0.0], 
-                scale=[0.02, 0.02, 0.13])
+                scale=[0.02, 0.02, 0.12])
 
-create_primitive(name='leg_22', primitive_type='cylinder', 
-                location=[0.0, -0.08, 0.0], 
-                scale=[0.01, 0.01, 0.08])
+create_primitive(name='leg_18', primitive_type='cylinder', 
+                location=[0.0, -0.09, 0.0], 
+                scale=[0.02, 0.02, 0.08])
 
 create_primitive(name='wheel_1', primitive_type='cylinder', 
-                location=[-0.19, -0.47, -0.04], 
-                scale=[0.03, 0.03, 0.01])
+                location=[-0.17, -0.46, -0.13], 
+                scale=[0.03, 0.03, 0.02])
 
 create_primitive(name='wheel_4', primitive_type='cylinder', 
-                location=[-0.1, -0.47, 0.18], 
-                scale=[0.03, 0.03, 0.01])
+                location=[-0.13, -0.46, 0.16], 
+                scale=[0.03, 0.03, 0.02])
 
 create_primitive(name='wheel_6', primitive_type='cylinder', 
-                location=[-0.02, -0.47, -0.2], 
-                scale=[0.03, 0.03, 0.01])
+                location=[0.13, -0.46, -0.17], 
+                scale=[0.03, 0.03, 0.02])
 
 create_primitive(name='wheel_7', primitive_type='cylinder', 
-                location=[0.14, -0.47, 0.15], 
-                scale=[0.03, 0.03, 0.01])
-
-create_primitive(name='wheel_10', primitive_type='cylinder', 
-                location=[0.19, -0.47, -0.08], 
-                scale=[0.03, 0.03, 0.01])
+                location=[0.16, -0.46, 0.13], 
+                scale=[0.03, 0.03, 0.02])
 
 create_curve(name='wheel cap_2', control_points=[
-    [[-0.18, -0.49, -0.07], [-0.19, -0.44, -0.04], [-0.2, -0.49, -0.0]]
+    [[-0.2, -0.48, -0.1], [-0.17, -0.42, -0.13], [-0.14, -0.48, -0.15]]
 ], thickness=0.002)
 
 create_curve(name='wheel cap_3', control_points=[
-    [[-0.12, -0.49, 0.16], [-0.1, -0.44, 0.18], [-0.07, -0.49, 0.2]]
+    [[-0.15, -0.48, 0.14], [-0.13, -0.42, 0.16], [-0.11, -0.48, 0.19]]
 ], thickness=0.002)
 
 create_curve(name='wheel cap_5', control_points=[
-    [[0.01, -0.49, -0.2], [-0.02, -0.44, -0.2], [-0.05, -0.49, -0.2]]
+    [[0.11, -0.48, -0.19], [0.13, -0.42, -0.17], [0.15, -0.48, -0.14]]
 ], thickness=0.002)
 
 create_curve(name='wheel cap_8', control_points=[
-    [[0.16, -0.49, 0.13], [0.14, -0.44, 0.15], [0.12, -0.49, 0.17]]
+    [[0.19, -0.48, 0.1], [0.16, -0.42, 0.13], [0.14, -0.48, 0.15]]
 ], thickness=0.002)
 
-create_curve(name='wheel cap_9', control_points=[
-    [[0.19, -0.49, -0.11], [0.19, -0.44, -0.08], [0.18, -0.49, -0.05]]
-], thickness=0.002)
+create_primitive(name='wheel axle_9', primitive_type='cylinder', 
+                location=[-0.14, -0.43, -0.15], 
+                scale=[0.01, 0.01, 0.01])
+
+create_primitive(name='wheel axle_10', primitive_type='cylinder', 
+                location=[-0.14, -0.43, 0.15], 
+                scale=[0.01, 0.01, 0.01])
 
 create_primitive(name='wheel axle_11', primitive_type='cylinder', 
-                location=[-0.18, -0.45, -0.06], 
+                location=[0.14, -0.43, -0.15], 
                 scale=[0.01, 0.01, 0.01])
 
 create_primitive(name='wheel axle_12', primitive_type='cylinder', 
-                location=[-0.12, -0.45, 0.16], 
-                scale=[0.01, 0.01, 0.01])
-
-create_primitive(name='wheel axle_13', primitive_type='cylinder', 
-                location=[0.0, -0.45, -0.2], 
-                scale=[0.01, 0.01, 0.01])
-
-create_primitive(name='wheel axle_14', primitive_type='cylinder', 
-                location=[0.12, -0.45, 0.16], 
-                scale=[0.01, 0.01, 0.01])
-
-create_primitive(name='wheel axle_15', primitive_type='cylinder', 
-                location=[0.19, -0.45, -0.06], 
+                location=[0.14, -0.43, 0.15], 
                 scale=[0.01, 0.01, 0.01])
 
 `,
@@ -676,6 +660,29 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
         }
     }
 
+    autoScrollToCodeBlock(functionBlock) {
+        if (!functionBlock || !this.codeEditor) return;
+
+        // Get the position of the function block relative to the code editor
+        const codeEditorRect = this.codeEditor.getBoundingClientRect();
+        const functionBlockRect = functionBlock.getBoundingClientRect();
+        
+        // Calculate the scroll position needed to bring the function block to the top
+        const scrollOffset = functionBlockRect.top - codeEditorRect.top + this.codeEditor.scrollTop;
+        
+        // Add a small padding to avoid cutting off the block at the very top
+        const padding = 10;
+        const targetScrollTop = Math.max(0, scrollOffset - padding);
+        
+        // Smooth scroll to the target position
+        this.codeEditor.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+        });
+        
+        console.log(`Auto-scrolling to code block for: ${functionBlock.dataset.meshName}`);
+    }
+
     unhighlightCodeFunction() {
         // Remove all function highlights
         const highlightedBlocks = this.codeEditor.querySelectorAll('.function-highlighted');
@@ -710,6 +717,7 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
         
         if (functionBlock) {
             this.highlightCodeFunctionBlock(functionBlock);
+            this.autoScrollToCodeBlock(functionBlock);
             this.highlightMeshObject(meshName);
             console.log(`Successfully highlighting mesh: ${meshName}`);
         } else {
@@ -753,7 +761,7 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
         if (functionBlock) {
             // Temporarily highlight the function block
             this.highlightCodeFunctionBlock(functionBlock);
-            functionBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            this.autoScrollToCodeBlock(functionBlock);
             
             setTimeout(() => {
                 this.unhighlightCodeFunction();
@@ -1059,14 +1067,19 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
         }
     }
     
-    focusMeshPart(meshName) {
+    focusMeshPartAlternative(meshName) {
         const meshPart = this.meshParts.find(part => part.name === meshName);
         if (meshPart) {
-            // Temporarily highlight the function
-            this.highlightCodeFunction(meshPart);
-            setTimeout(() => {
-                this.unhighlightCodeFunction();
-            }, 2000);
+            const functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
+            if (functionBlock) {
+                // Temporarily highlight the function block
+                this.highlightCodeFunctionBlock(functionBlock);
+                this.autoScrollToCodeBlock(functionBlock);
+                
+                setTimeout(() => {
+                    this.unhighlightCodeFunction();
+                }, 2000);
+            }
         }
         
         console.log(`Focusing on mesh part: ${meshName}`);

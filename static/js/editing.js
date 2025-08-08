@@ -14,6 +14,15 @@ class ShapeEditor {
         this.meshParts = [];
         this.isInitialized = false;
         this.currentHighlightedFunction = null;
+        this.currentHighlightedBlock = null;
+        
+        // Debouncing for mesh highlighting to prevent rapid successive calls
+        this.highlightDebounceTimer = null;
+        this.lastHighlightedMesh = null;
+        
+        // Track user scroll activity to avoid interfering with auto-scroll
+        this.lastUserScrollTime = 0;
+        this.userScrollTimeout = null;
         
         // Model code templates for editing (simplified versions with actual mesh names)
         this.modelCodes = {
@@ -663,24 +672,44 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
     autoScrollToCodeBlock(functionBlock) {
         if (!functionBlock || !this.codeEditor) return;
 
+        // Don't auto-scroll if user has recently scrolled (within last 2 seconds)
+        const timeSinceUserScroll = Date.now() - this.lastUserScrollTime;
+        if (timeSinceUserScroll < 2000) {
+            console.log('Skipping auto-scroll due to recent user scroll activity');
+            return;
+        }
+
         // Get the position of the function block relative to the code editor
         const codeEditorRect = this.codeEditor.getBoundingClientRect();
         const functionBlockRect = functionBlock.getBoundingClientRect();
         
-        // Calculate the scroll position needed to bring the function block to the top
-        const scrollOffset = functionBlockRect.top - codeEditorRect.top + this.codeEditor.scrollTop;
+        // Check if the function block is already visible in the viewport
+        // Consider it visible if at least 50% of the block is in view
+        const blockHeight = functionBlockRect.height;
+        const visibleTop = Math.max(functionBlockRect.top, codeEditorRect.top);
+        const visibleBottom = Math.min(functionBlockRect.bottom, codeEditorRect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        const isVisible = visibleHeight >= blockHeight * 0.5;
         
-        // Add a small padding to avoid cutting off the block at the very top
-        const padding = 10;
-        const targetScrollTop = Math.max(0, scrollOffset - padding);
-        
-        // Smooth scroll to the target position
-        this.codeEditor.scrollTo({
-            top: targetScrollTop,
-            behavior: 'smooth'
-        });
-        
-        console.log(`Auto-scrolling to code block for: ${functionBlock.dataset.meshName}`);
+        // Only scroll if the block is not sufficiently visible
+        if (!isVisible) {
+            // Calculate the scroll position needed to bring the function block to the top
+            const scrollOffset = functionBlockRect.top - codeEditorRect.top + this.codeEditor.scrollTop;
+            
+            // Add a small padding to avoid cutting off the block at the very top
+            const padding = 10;
+            const targetScrollTop = Math.max(0, scrollOffset - padding);
+            
+            // Smooth scroll to the target position
+            this.codeEditor.scrollTo({
+                top: targetScrollTop,
+                behavior: 'smooth'
+            });
+            
+            console.log(`Auto-scrolling to code block for: ${functionBlock.dataset.meshName}`);
+        } else {
+            console.log(`Code block for ${functionBlock.dataset.meshName} is already visible, skipping scroll`);
+        }
     }
 
     unhighlightCodeFunction() {
@@ -691,44 +720,57 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
     }
 
     highlightMeshPartByName(meshName) {
-        console.log(`Attempting to highlight mesh: ${meshName}`);
-        console.log('Available mesh parts:', this.meshParts.map(p => p.name));
-        
-        // Try direct match first
-        let functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
-        console.log(`Direct match result for "${meshName}":`, functionBlock ? 'found' : 'not found');
-        
-        // If no direct match, try simple name normalization (remove spaces, underscores, case insensitive)
-        if (!functionBlock) {
-            const normalizedMeshName = meshName.replace(/[\s_-]/g, '').toLowerCase();
-            console.log(`Normalized mesh name: "${normalizedMeshName}"`);
-            
-            const meshPart = this.meshParts.find(part => {
-                const normalizedPartName = part.name.replace(/[\s_-]/g, '').toLowerCase();
-                console.log(`Comparing "${normalizedMeshName}" with "${normalizedPartName}"`);
-                return normalizedPartName === normalizedMeshName;
-            });
-            
-            if (meshPart) {
-                functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshPart.name}"]`);
-                console.log(`Found normalized match: ${meshName} -> ${meshPart.name}`);
-            }
+        // Debounce rapid successive calls
+        if (this.highlightDebounceTimer) {
+            clearTimeout(this.highlightDebounceTimer);
         }
         
-        if (functionBlock) {
-            this.highlightCodeFunctionBlock(functionBlock);
-            this.autoScrollToCodeBlock(functionBlock);
-            this.highlightMeshObject(meshName);
-            console.log(`Successfully highlighting mesh: ${meshName}`);
-        } else {
-            console.log(`Function block not found for mesh: ${meshName}`);
-            console.log('Available function blocks:', Array.from(this.codeEditor.querySelectorAll('[data-mesh-name]')).map(b => b.dataset.meshName));
+        // If it's the same mesh, don't re-highlight
+        if (this.lastHighlightedMesh === meshName) {
+            return;
+        }
+        
+        this.highlightDebounceTimer = setTimeout(() => {
+            console.log(`Attempting to highlight mesh: ${meshName}`);
+            console.log('Available mesh parts:', this.meshParts.map(p => p.name));
             
-            // Log suggestion for fixing naming mismatch
-            console.warn(`NAMING MISMATCH: Mesh "${meshName}" not found in code. Check if:
+            // Try direct match first
+            let functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
+            console.log(`Direct match result for "${meshName}":`, functionBlock ? 'found' : 'not found');
+            
+            // If no direct match, try simple name normalization (remove spaces, underscores, case insensitive)
+            if (!functionBlock) {
+                const normalizedMeshName = meshName.replace(/[\s_-]/g, '').toLowerCase();
+                console.log(`Normalized mesh name: "${normalizedMeshName}"`);
+                
+                const meshPart = this.meshParts.find(part => {
+                    const normalizedPartName = part.name.replace(/[\s_-]/g, '').toLowerCase();
+                    console.log(`Comparing "${normalizedMeshName}" with "${normalizedPartName}"`);
+                    return normalizedPartName === normalizedMeshName;
+                });
+                
+                if (meshPart) {
+                    functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshPart.name}"]`);
+                    console.log(`Found normalized match: ${meshName} -> ${meshPart.name}`);
+                }
+            }
+            
+            if (functionBlock) {
+                this.highlightCodeFunctionBlock(functionBlock);
+                this.autoScrollToCodeBlock(functionBlock);
+                this.highlightMeshObject(meshName);
+                this.lastHighlightedMesh = meshName;
+                console.log(`Successfully highlighting mesh: ${meshName}`);
+            } else {
+                console.log(`Function block not found for mesh: ${meshName}`);
+                console.log('Available function blocks:', Array.from(this.codeEditor.querySelectorAll('[data-mesh-name]')).map(b => b.dataset.meshName));
+                
+                // Log suggestion for fixing naming mismatch
+                console.warn(`NAMING MISMATCH: Mesh "${meshName}" not found in code. Check if:
 1. The mesh name in the 3D model (.glb) matches the function name in the code
 2. Consider renaming the mesh in Blender to match: ${this.meshParts.map(p => p.name).join(', ')}`);
-        }
+            }
+        }, 50); // 50ms debounce delay
     }
     
     handleCodeHover(event) {
@@ -851,6 +893,23 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
             wireframeBtn.addEventListener('click', () => this.toggleWireframe());
         }
         
+        // Track user scroll activity on code editor
+        if (this.codeEditor) {
+            this.codeEditor.addEventListener('scroll', () => {
+                this.lastUserScrollTime = Date.now();
+                
+                // Clear any existing timeout
+                if (this.userScrollTimeout) {
+                    clearTimeout(this.userScrollTimeout);
+                }
+                
+                // Set a timeout to reset the user scroll flag after 2 seconds
+                this.userScrollTimeout = setTimeout(() => {
+                    this.lastUserScrollTime = 0;
+                }, 2000);
+            });
+        }
+        
         // Gallery functionality
         if (galleryLabel && galleryDropdown) {
             // Toggle gallery dropdown on click
@@ -945,6 +1004,9 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
         }
         
         console.log(`Switching to model: ${modelName}`);
+        
+        // Clear all timers and state
+        this.clearHighlightingState();
         
         // Clear the previous model first
         this.clearCurrentModel();
@@ -1058,7 +1120,30 @@ create_primitive(name='shelf leg_3', primitive_type='cube',
         }
     }
     
+    clearHighlightingState() {
+        // Clear all timers
+        if (this.highlightDebounceTimer) {
+            clearTimeout(this.highlightDebounceTimer);
+            this.highlightDebounceTimer = null;
+        }
+        if (this.userScrollTimeout) {
+            clearTimeout(this.userScrollTimeout);
+            this.userScrollTimeout = null;
+        }
+        
+        // Reset state
+        this.lastHighlightedMesh = null;
+        this.lastUserScrollTime = 0;
+    }
+    
     unhighlightMeshPart() {
+        // Clear debouncing state
+        if (this.highlightDebounceTimer) {
+            clearTimeout(this.highlightDebounceTimer);
+            this.highlightDebounceTimer = null;
+        }
+        this.lastHighlightedMesh = null;
+        
         this.unhighlightCodeFunction();
         
         // Unhighlight mesh through ThreeViewer

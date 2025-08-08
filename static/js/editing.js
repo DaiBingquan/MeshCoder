@@ -619,23 +619,35 @@ create_primitive(name='shelf leg_3', primitive_type='cube', location=[0.27, 0.0,
     }
 
     setupFunctionBlockEvents() {
+        const normalize = name => name.replace(/[\s_-]/g, '').toLowerCase();
         const functionBlocks = this.codeEditor.querySelectorAll('.code-function-block');
-        
+
         functionBlocks.forEach(block => {
-            const meshName = block.dataset.meshName;
+            const rawName = block.dataset.meshName;
+            const normalizedName = normalize(rawName);
             const textarea = block.querySelector('.function-code-area');
-            
-            // Hover events for highlighting
+
+            // Hover events
             block.addEventListener('mouseenter', () => {
-                this.highlightMeshPartByName(meshName);
+                // Find meshName from Three.js that matches
+                const matchedMeshName = Object.keys(this.threeViewer.meshObjects || {}).find(
+                    meshName => normalize(meshName) === normalizedName
+                );
+
+                if (matchedMeshName) {
+                    this.highlightMeshObject(matchedMeshName);
+                } else {
+                    console.warn(`No matching mesh found for block: ${rawName}`);
+                }
+
                 this.highlightCodeFunctionBlock(block);
             });
-            
+
             block.addEventListener('mouseleave', () => {
-                this.unhighlightMeshPart();
+                this.unhighlightMeshObject();
             });
-            
-            // Code editing events
+
+            // Editing
             if (textarea) {
                 textarea.addEventListener('input', () => this.onFunctionCodeChange(block));
                 textarea.addEventListener('scroll', () => this.syncFunctionOverlay(block));
@@ -812,55 +824,52 @@ create_primitive(name='shelf leg_3', primitive_type='cube', location=[0.27, 0.0,
     }
 
     highlightMeshPartByName(meshName) {
-        // If it's the same mesh, don't re-highlight
-        if (this.lastHighlightedMesh === meshName) {
-            return;
-        }
-        
+        // helper
+        const normalize = name => name.replace(/[\s_-]/g, '').toLowerCase();
+
+        // Skip redundant highlighting
+        if (this.lastHighlightedMesh === meshName) return;
+
         console.log(`Attempting to highlight mesh: ${meshName}`);
         console.log('Available mesh parts:', this.meshParts.map(p => p.name));
-        
-        // Try direct match first
-        let functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshName}"]`);
-        console.log(`Direct match result for "${meshName}":`, functionBlock ? 'found' : 'not found');
-        
-        // If no direct match, try to find a block that contains this function
+
+        const normalizedMeshName = normalize(meshName);
+
+        // Try direct normalized match to function block DOM
+        const allBlocks = Array.from(this.codeEditor.querySelectorAll('[data-mesh-name]'));
+        let functionBlock = allBlocks.find(el => normalize(el.dataset.meshName) === normalizedMeshName);
+
+        // Try searching in meshParts metadata if DOM match fails
         if (!functionBlock) {
             const meshPart = this.meshParts.find(part => {
-                // Check if this block contains the mesh name in its functions array
-                if (part.functions && part.functions.includes(meshName)) {
+                // check function name list
+                if (part.functions && part.functions.some(fn => normalize(fn) === normalizedMeshName)) {
                     return true;
                 }
-                
-                // Also try normalized name matching
-                const normalizedMeshName = meshName.replace(/[\s_-]/g, '').toLowerCase();
-                const normalizedPartName = part.name.replace(/[\s_-]/g, '').toLowerCase();
-                return normalizedPartName === normalizedMeshName;
+                return normalize(part.name) === normalizedMeshName;
             });
-            
+
             if (meshPart) {
-                functionBlock = this.codeEditor.querySelector(`[data-mesh-name="${meshPart.name}"]`);
-                console.log(`Found block containing function: ${meshName} -> ${meshPart.name}`);
+                functionBlock = allBlocks.find(el => normalize(el.dataset.meshName) === normalize(meshPart.name));
+                console.log(`Found matching meshPart: ${meshName} -> ${meshPart.name}`);
             }
         }
-        
+
+        // Final result
         if (functionBlock) {
             this.highlightCodeFunctionBlock(functionBlock);
             this.autoScrollToCodeBlock(functionBlock);
             this.highlightMeshObject(meshName);
             this.lastHighlightedMesh = meshName;
-            console.log(`Successfully highlighting mesh: ${meshName}`);
+            console.log(`✅ Successfully highlighted mesh: ${meshName}`);
         } else {
-            console.log(`Function block not found for mesh: ${meshName}`);
-            console.log('Available function blocks:', Array.from(this.codeEditor.querySelectorAll('[data-mesh-name]')).map(b => b.dataset.meshName));
-            
-            // Log suggestion for fixing naming mismatch
-            console.warn(`NAMING MISMATCH: Mesh "${meshName}" not found in code. Check if:
-1. The mesh name in the 3D model (.glb) matches the function name in the code
-2. Consider renaming the mesh in Blender to match: ${this.meshParts.map(p => p.name).join(', ')}`);
+            console.warn(`❌ Function block not found for mesh: ${meshName}`);
+            console.log('Available function blocks:', allBlocks.map(b => b.dataset.meshName));
+            console.warn(`NAMING MISMATCH: Mesh "${meshName}" not found in code. Check if:\n1. The mesh name in .glb matches a function name in code.\n2. Consider normalizing names like: ${this.meshParts.map(p => p.name).join(', ')}`);
         }
-    }
-    
+    }    
+
+
     handleCodeHover(event) {
         // This method is no longer needed with function blocks
         // Individual function blocks handle their own hover events
